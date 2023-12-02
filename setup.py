@@ -29,7 +29,9 @@ REQUIRES = [
     "numpy==1.24.1",
     "pandas==1.5.2",
     "fastapi==0.104.1",
-    "python-dotenv"
+    "uvicorn",
+    "python-dotenv",
+    "openpyxl"
 ]
 
 REQUIRES_DEV = [
