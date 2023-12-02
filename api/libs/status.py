@@ -2,7 +2,5 @@ import json
 from api import main
 
 def get_all_status():
-    status = main.DB.get('Summary')
-    status.dropna(inplace=True)
-    status_dict = status.to_dict()
+    status_dict = main.DB.get('Summary')
     return status_dict

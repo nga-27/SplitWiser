@@ -35,7 +35,6 @@ def google_sheets_to_local():
 
 def copier(**kwargs):
     should_go_to_cloud = kwargs.get("local_to_cloud", False)
-    print(should_go_to_cloud)
     if should_go_to_cloud:
         local_to_google_sheets()
     else:
