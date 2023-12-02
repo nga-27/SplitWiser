@@ -31,7 +31,8 @@ REQUIRES = [
     "fastapi==0.104.1",
     "uvicorn",
     "python-dotenv",
-    "openpyxl"
+    "openpyxl",
+    "pydantic"
 ]
 
 REQUIRES_DEV = [
