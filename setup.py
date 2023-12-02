@@ -30,7 +30,7 @@ REQUIRES = [
     "pandas==1.5.2",
     "fastapi==0.104.1",
     "uvicorn",
-    "python-dotenv",
+    "python-dotenv=1.0.0",
     "openpyxl",
     "pydantic"
 ]
