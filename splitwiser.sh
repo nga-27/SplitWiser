@@ -9,8 +9,8 @@ echo "----------------"
 echo "Running SplitWiser!"
 echo ""
 
-python copier.py
-# python app.py
+# python copier.py
+python app.py
 
 sleep 2
 

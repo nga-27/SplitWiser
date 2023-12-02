@@ -25,12 +25,11 @@ def handle_transaction_sheets(raw_df: pd.DataFrame, sheet_name: str) -> dict:
 
 def init_db(xlsx_path: str) -> dict:
     df_db = pd.read_excel(xlsx_path, sheet_name=None)
-    modded_db = {}#{key: {} for key in df_db.keys()}
+    modded_db = {key: {} for key in df_db.keys()}
     # People (internal key) first
-    # modded_db['People'] = load_people_involved(df_db)
-    # modded_db['Summary'] = handle_loading_summary_sheet(df_db['Summary'])
+    modded_db['People'] = load_people_involved(df_db)
+    modded_db['Summary'] = handle_loading_summary_sheet(df_db['Summary'])
     for key in df_db:
         if key not in ('Summary', 'People'):
             modded_db[key] = handle_transaction_sheets(df_db[key], key)
-            modded_db[key] = {"hi": "there"}
-    return {} #modded_db
+    return modded_db
