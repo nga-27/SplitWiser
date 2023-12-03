@@ -32,7 +32,9 @@ REQUIRES = [
     "uvicorn",
     "python-dotenv==1.0.0",
     "openpyxl",
-    "pydantic"
+    "pydantic",
+    "psutil",
+    "requests"
 ]
 
 REQUIRES_DEV = [

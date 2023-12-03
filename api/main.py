@@ -14,13 +14,14 @@ def load_db() -> dict:
     load_dotenv(DOTENV_PATH)
     db_path = os.getenv("INPUT_SOURCE_PATH")
     db = init_db(db_path)
-    pprint.pprint(db)
+    # pprint.pprint(db)
     return db
 
 DB = load_db()
 
 def run_main():
     import uvicorn
+    print("not main")
     uvicorn.run("api.server:app", host="localhost", port=8765, reload=True, workers=1)
 
 if __name__ == "__main__":
