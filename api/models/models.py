@@ -22,5 +22,5 @@ class Transaction(BaseModel):
     id: Optional[str] = "0"
     date: Optional[str] = ""
     item: str
-    paid_by_id: list # List[TransactionalDebt] as {person_name: amount}
-    owed_by_id: list # List[TransactionalDebt] as {person_name: amount}
+    paid_by_id: dict # Dict[TransactionalDebt] as {person_name: amount, person_name...}
+    owed_by_id: dict # List[TransactionalDebt] as {person_name: amount, person_name...}

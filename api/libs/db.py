@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Dict
 import datetime
 import json
 
@@ -61,18 +61,18 @@ def load_people_involved(raw_df: pd.DataFrame) -> dict:
     sub_dict['__list__'] = list_of_people
     return sub_dict
 
-def money_by_involved_handler(transaction_dict: dict, index: int, key: str, _db: dict) -> List[dict]:
-    money_list = []
+def money_by_involved_handler(transaction_dict: dict, index: int, key: str, _db: dict) -> Dict[str, float]:
+    money_dict = {}
     if key not in ('Owes', 'Paid'):
-        return money_list
+        return money_dict
     for person_id, person_obj in _db['People'].items():
         try:
             int(person_id)
             val = transaction_dict[f"{person_obj['name']} {key}"][index]
-            money_list.append({person_obj['name']: val})
+            money_dict[person_obj['name']] = val
         except:
             continue
-    return money_list
+    return money_dict
 
 
 def handle_transaction_sheets(raw_df: pd.DataFrame, sheet_name: str, _db: dict) -> dict:
@@ -113,4 +113,9 @@ def get_db() -> dict:
 def post_to_db(obj_to_add: dict, id: str, table: str) -> dict:
     db = read_db()
     db[table][id] = obj_to_add
+    return update_db(db)
+
+def patch_entire_table(table_data: dict, table: str) -> dict:
+    db = read_db()
+    db[table] = table_data
     return update_db(db)

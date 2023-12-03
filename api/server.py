@@ -1,24 +1,26 @@
 import os
 import signal
+import datetime
 
-import dotenv
+from dotenv import load_dotenv
 from fastapi import FastAPI, Response
 
-from api.routers import status, transactions
+from api.routers import summary, transactions
 from api.libs.db import reset_db, init_db
 
 app = FastAPI()
 
-app.include_router(status.router)
+app.include_router(summary.router)
 app.include_router(transactions.router)
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    message = "Hello from SplitWiser! The current time is " +\
+        f"{datetime.datetime.now().strftime('%m/%d/%Y_%H:%M:%S.%f')}"
+    return {"message": message}
 
 @app.get("/start")
 async def start():
-    from dotenv import load_dotenv
     DOTENV_PATH = os.path.join(os.getcwd(),'.env')
     load_dotenv(DOTENV_PATH)
     db_path = os.getenv("INPUT_SOURCE_PATH")

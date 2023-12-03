@@ -18,7 +18,7 @@ def run_cmd_prompts():
     print("Initializing the DB...")
     requests.get(f"{BASE_URL}/start")
     time.sleep(2)
-    
+
     print("\r\n\r\n----------------")
     print("SplitWiser")
     print("----------------\r\n")
