@@ -2,11 +2,12 @@ import os
 import signal
 from fastapi import FastAPI, Response
 
-from api.routers.status import router as status_router
+from api.routers import status, transactions
 
 app = FastAPI()
 
-app.include_router(status_router)
+app.include_router(status.router)
+app.include_router(transactions.router)
 
 @app.get("/")
 async def root():

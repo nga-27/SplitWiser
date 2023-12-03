@@ -1,5 +1,4 @@
-from typing import Optional, List
-import datetime
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -13,9 +12,15 @@ class TransactionalDebt(BaseModel):
     person: Person
     amount: float
 
-class Transaction(BaseModel):
-    id: str
-    date: Optional[str] = datetime.datetime.now().strftime("%m/%d/%Y")
+class AddTransaction(BaseModel):
     item: str
-    paid_by_id: list # List[TransactionalDebt] as {person_id: amount}
-    owed_by_id: list # List[TransactionalDebt] as {person_id: amount}
+    paid_by_name: str
+    paid_amount: float
+    other_person_owes: float
+
+class Transaction(BaseModel):
+    id: Optional[str] = "0"
+    date: Optional[str] = ""
+    item: str
+    paid_by_id: list # List[TransactionalDebt] as {person_name: amount}
+    owed_by_id: list # List[TransactionalDebt] as {person_name: amount}
