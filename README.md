@@ -8,3 +8,8 @@ From the root of the project, run:
 ```sh
 python app.py
 ```
+
+For API debugging, you can run `uvicorn` directly:
+```sh
+uvicorn api.server:app --log-level=warning --port=8765
+```

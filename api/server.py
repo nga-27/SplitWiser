@@ -14,5 +14,6 @@ async def root():
 
 @app.get("/shutdown")
 async def shutdown():
+    # We'll want to save the DB at this point!
     os.kill(os.getpid(), signal.SIGTERM)
     return Response(status_code=200, content="Server is shutting down...")

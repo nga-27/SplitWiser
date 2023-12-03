@@ -1,10 +1,15 @@
 """ proto app as well as initial operator against the api """
+import os
 import subprocess
 import threading
 import time
 import requests
+from dotenv import load_dotenv
 
-PORT_NUMBER = 8765
+load_dotenv()
+PARTIAL_BASE = os.getenv("PARTIAL_BASE_URL", "http://localhost:")
+PORT_NUMBER = os.getenv("API_PORT_NUMBER", "8765")
+BASE_URL = PARTIAL_BASE + PORT_NUMBER
 
 def run_api():
     subprocess.run(["uvicorn", "api.server:app", "--log-level=warning", f"--port={PORT_NUMBER}"])
@@ -20,7 +25,7 @@ def run_cmd_prompts():
         if x.lower() == 'exit':
             is_running = False
     print("\r\nShutting down...")
-    requests.get(f"http://localhost:{PORT_NUMBER}/shutdown")
+    requests.get(f"{BASE_URL}/shutdown")
     time.sleep(3)
 
 
