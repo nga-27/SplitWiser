@@ -1,6 +1,5 @@
-import json
-from api import main
+from api.libs.db import get_db
 
 def get_all_status():
-    status_dict = main.DB.get('Summary')
+    status_dict = get_db().get('Summary')
     return status_dict

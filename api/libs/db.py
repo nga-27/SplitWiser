@@ -1,11 +1,37 @@
+import os
 from typing import List
 import datetime
+import json
 
 import pandas as pd
 
-from api.models.models import Transaction, AddTransaction
-from api import main
+from api.models.models import Transaction
 
+DB_DIR = "__internal__"
+DB_PATH = os.path.join(DB_DIR, "db.json")
+
+
+###########################################
+def reset_db():
+    if not os.path.exists(DB_DIR):
+        os.mkdir(DB_DIR)
+    with open(DB_PATH, 'w') as db_file:
+        # wipe the old temp db clean!
+        json.dump({}, db_file)
+    return
+
+def update_db(db_obj: dict):
+    with open(DB_PATH, 'w') as dbf:
+        json.dump(db_obj, dbf)
+    return
+
+def read_db():
+    db_obj = {}
+    with open(DB_PATH, 'r') as dbf:
+        db_obj = json.load(dbf)
+    return db_obj
+
+###########################################
 
 # Internal for INIT!
 def handle_loading_summary_sheet(raw_df: pd.DataFrame) -> dict:
@@ -67,6 +93,7 @@ def handle_transaction_sheets(raw_df: pd.DataFrame, sheet_name: str, _db: dict) 
 
 # Public-facing init_db structure for managing functionality
 def init_db(xlsx_path: str) -> dict:
+    reset_db()
     df_db = pd.read_excel(xlsx_path, sheet_name=None)
     modded_db = {key: {} for key in df_db.keys()}
     # People (internal key) first
@@ -75,32 +102,15 @@ def init_db(xlsx_path: str) -> dict:
     for key in df_db:
         if key not in ('Summary', 'People'):
             modded_db[key] = handle_transaction_sheets(df_db[key], key, modded_db)
-    return modded_db
+    update_db(modded_db)
+    return
 
 ##########################################################
 
-def get_all_transactions(ledger_sheet: str) -> dict:
-    return main.DB[ledger_sheet]
+def get_db() -> dict:
+    return read_db()
 
-
-def add_transaction(add_transaction: AddTransaction, ledger_sheet: str):
-    num_records = len(main.DB[ledger_sheet])
-    people = main.DB['People']['__list__']
-    paid = [{add_transaction.paid_by_name: add_transaction.paid_amount}]
-    for person in people:
-        if person not in [item.keys() for item in paid]:
-            paid.append({person: 0})
-    owes = [{add_transaction.paid_by_name: 0}]
-    for person in people:
-        if person not in [item.keys() for item in owes]:
-            owes.append({person: add_transaction.other_person_owes})
-
-    record = Transaction(
-        date=datetime.datetime.now().strftime("%m/%d/%Y"),
-        id=str(num_records),
-        item=add_transaction.item,
-        paid_by_id=paid,
-        owed_by_id=owes
-    ).dict()
-    main.DB[ledger_sheet][record["id"]] = record
-    return main.DB
+def post_to_db(obj_to_add: dict, id: str, table: str) -> dict:
+    db = read_db()
+    db[table][id] = obj_to_add
+    return update_db(db)

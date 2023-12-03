@@ -15,6 +15,10 @@ def run_api():
     subprocess.run(["uvicorn", "api.server:app", "--log-level=warning", f"--port={PORT_NUMBER}"])
 
 def run_cmd_prompts():
+    print("Initializing the DB...")
+    requests.get(f"{BASE_URL}/start")
+    time.sleep(2)
+    
     print("\r\n\r\n----------------")
     print("SplitWiser")
     print("----------------\r\n")
@@ -35,12 +39,12 @@ def run_main():
     t_ui = threading.Thread(target=run_cmd_prompts, name='Command-Based UI')
 
     t_api.start()
-    time.sleep(5)
+    time.sleep(4)
     t_ui.start()
 
     t_ui.join()
     t_api.join()
-    print("omg done!")
+    print("Done.")
     
 
 
