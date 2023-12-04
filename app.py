@@ -6,6 +6,8 @@ import time
 import requests
 from dotenv import load_dotenv
 
+from cmd_app.main_handler import run
+
 load_dotenv()
 PARTIAL_BASE = os.getenv("PARTIAL_BASE_URL", "http://localhost:")
 PORT_NUMBER = os.getenv("API_PORT_NUMBER", "8765")
@@ -22,19 +24,16 @@ def run_cmd_prompts():
     print("\r\n\r\n----------------")
     print("SplitWiser")
     print("----------------\r\n")
-    is_running = True
-    while is_running:
-        x = input("What is your favorite color? ")
-        print(f"{x}... NO, wait... ahhhhhh!")
-        if x.lower() == 'exit':
-            is_running = False
+    
+    run()
+    
     print("\r\nShutting down...")
     requests.get(f"{BASE_URL}/shutdown")
     time.sleep(3)
 
 
 def run_main():
-    print("loading...")
+    print("Loading command-line application...")
     t_api = threading.Thread(target=run_api, name='API')
     t_ui = threading.Thread(target=run_cmd_prompts, name='Command-Based UI')
 

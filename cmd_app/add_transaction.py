@@ -1,4 +1,4 @@
 import requests
 
-def add_transaction():
-    print("add transaction")
+def add_handler() -> bool:
+    return True
