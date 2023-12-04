@@ -57,8 +57,8 @@ def get_valid_amount(message: str) -> float:
             time.sleep(2)
             continue
 
-        verify = input(f"Are you happy with the amount of ${amt}? (enter for yes) ")
-        if verify != '':
+        verify = input(f"Are you happy with the amount of ${amt}? (enter or yes) ")
+        if verify != '' and verify.lower() != 'yes':
             amt = -1.0
     return amt
 

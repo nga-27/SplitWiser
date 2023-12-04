@@ -6,11 +6,15 @@ from cmd_app.delete_transaction import delete_handler
 from cmd_app.record_payment import record_handler
 
 OPTION_STATES = {
-    "--v": "view",
-    "--a": "add",
-    "--d": "delete",
-    "--r": "record",
-    "--e": "exit",
+    "v": "view",
+    "view": "view",
+    "a": "add",
+    "add": "add",
+    "d": "delete",
+    "delete": "delete",
+    "s": "record",
+    "settle": "record",
+    "e": "exit",
     "exit": "exit"
 }
 
@@ -33,11 +37,11 @@ def what_to_do_options():
     matched = None
     while matched is None:
         options = "What would you like to do? Options include:\r\n\r\n"
-        options += "\t- View Transactions (--v)\r\n"
-        options += "\t- Add Transaction (--a)\r\n"
-        options += "\t- Delete Transaction (--d)\r\n"
-        options += "\t- Record Payment / Settle Up (--r)\r\n"
-        options += "\t- Exit (--e or exit)"
+        options += "\t- View Transactions (v or view)\r\n"
+        options += "\t- Add Transaction (a or add)\r\n"
+        options += "\t- Delete Transaction (d or delete)\r\n"
+        options += "\t- Settle Up (s or settle)\r\n"
+        options += "\t- Exit (e or exit)"
         print(options)
         passed = input("\r\nSo... what would you like to do? ")
         passed = passed.lower().strip()
