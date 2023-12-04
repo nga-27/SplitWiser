@@ -34,6 +34,7 @@ async def shutdown():
     DOTENV_PATH = os.path.join(os.getcwd(),'.env')
     load_dotenv(DOTENV_PATH)
     db_path = os.getenv("INPUT_SOURCE_PATH")
+    summary.update_summary()
     save_db(db_path)
     reset_db()
     os.kill(os.getpid(), signal.SIGTERM)

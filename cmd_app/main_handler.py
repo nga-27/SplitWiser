@@ -14,7 +14,7 @@ OPTION_STATES = {
     "exit": "exit"
 }
 
-def exit_handler() -> bool:
+def exit_handler(base_url: str) -> bool:
     print("\r\nWe'll start to exit...\r\n")
     time.sleep(1)
     return False
@@ -49,8 +49,8 @@ def what_to_do_options():
 
 ###################################################
 
-def run():
+def run(base_url: str):
     is_running = True
     while is_running:
         action = what_to_do_options()
-        is_running = ACTION_FUNCTIONS[action]()
+        is_running = ACTION_FUNCTIONS[action](base_url)

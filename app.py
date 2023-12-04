@@ -25,8 +25,8 @@ def run_cmd_prompts():
     print("SplitWiser")
     print("----------------\r\n")
     
-    run()
-    
+    run(BASE_URL)
+
     print("\r\nShutting down...")
     requests.get(f"{BASE_URL}/shutdown")
     time.sleep(3)
