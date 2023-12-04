@@ -96,7 +96,29 @@ def convert_db_people_to_xlsx_people(person_table: dict) -> pd.DataFrame:
     df_db = pd.DataFrame.from_dict(df_as_dict)
     df_db.set_index('Person', inplace=True)
     return df_db
-        
+
+
+###########################################################
+
+def find_max_column_width(column: list, column_name: str='') -> int:
+    """find_max_column_width
+
+    Of all items in a given column list, find the "longest" item (when casted to a string) so we
+    can format the column widths appropriately.
+
+    Args:
+        column (list): column to evaluate each item for width by casting item to str and measuring
+        column_name (str): name of the column (Default: '')
+
+    Returns:
+        int: max length of column + 2
+    """
+    max_len = len(column_name)
+    for item in column:
+        if len(str(item)) > max_len:
+            max_len = len(str(item))
+
+    return max_len + 2
 
 
 ###########################################################
@@ -124,6 +146,15 @@ def set_real_xlsx_db(db_dict: dict, db_path: str) -> None:
             else:
                 xlsx_as_dict[sheet] = convert_db_people_to_xlsx_people(db_dict[sheet])
             xlsx_as_dict[sheet].to_excel(writer, sheet_name=sheet)
+
+            worksheet = writer.sheets[sheet]
+            max_len = find_max_column_width(
+                xlsx_as_dict[sheet].index, column_name=xlsx_as_dict[sheet].index.name)
+            worksheet.set_column(0, 0, max_len)
+
+            for i, col in enumerate(xlsx_as_dict[sheet]):
+                max_len = find_max_column_width(xlsx_as_dict[sheet][col], col)
+                worksheet.set_column(i+1, i+1, max_len)
 
 
 def archive_xlsx_file(src_path: str) -> None:

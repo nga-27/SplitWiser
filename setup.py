@@ -34,7 +34,8 @@ REQUIRES = [
     "openpyxl",
     "pydantic",
     "psutil",
-    "requests"
+    "requests",
+    "XlsxWriter"
 ]
 
 REQUIRES_DEV = [
