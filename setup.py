@@ -26,12 +26,16 @@ VERSION = '0.0.1'
 
 # What packages are required for this module to be executed?
 REQUIRES = [
-    "numpy==1.24.1",
-    "pandas==1.5.2",
-    "fastapi==0.104.1",
+    "numpy",
+    "pandas",
+    "fastapi",
     "uvicorn",
-    "python-dotenv",
-    "openpyxl"
+    "python-dotenv==1.0.0",
+    "openpyxl",
+    "pydantic",
+    "psutil",
+    "requests",
+    "XlsxWriter"
 ]
 
 REQUIRES_DEV = [

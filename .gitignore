@@ -162,3 +162,4 @@ cython_debug/
 # App stuff
 output/*
 .DS_Store
+__internal__
