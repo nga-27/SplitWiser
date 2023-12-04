@@ -2,7 +2,7 @@ import datetime
 
 from fastapi import APIRouter
 
-from api.models.models import Transaction, AddTransaction
+from api.models.models import AddTransaction
 from api.libs.transactions import add_transaction, get_all_transactions
 
 router = APIRouter(
@@ -11,11 +11,11 @@ router = APIRouter(
 
 
 @router.get("/jill_and_nick", tags=["Transaction"], status_code=200)
-def get_jill_and_nick_transactions():
+def get_jill_and_nick_transactions() -> dict:
     return get_all_transactions('Jill and Nick')
 
 @router.get("/house_avery", tags=["Transaction"], status_code=200)
-def get_jill_and_nick_transactions():
+def get_jill_and_nick_transactions() -> dict:
     return get_all_transactions('House Avery')
 
 @router.post("/house_avery", tags=["Transaction"], status_code=201)
