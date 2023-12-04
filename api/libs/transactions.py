@@ -1,10 +1,23 @@
 import datetime
+from typing import Union
 
-from api.libs.db import get_db, post_to_db
+from api.libs.db import get_db, post_to_db, patch_entire_table
 from api.models.models import AddTransaction, Transaction
 
 def get_all_transactions(ledger_sheet: str) -> dict:
     return get_db()[ledger_sheet]
+
+def get_single_transaction(id: str, ledger_sheet: str) -> dict:
+    ledger = get_db()[ledger_sheet]
+    return ledger.get(str(id))
+
+def delete_transaction(id: str, ledger_sheet: str) -> Union[None, str]:
+    ledger = get_db()[ledger_sheet]
+    if id not in ledger:
+        return f"Transaction id '{id}' not found."
+    ledger.pop(id)
+    patch_entire_table(ledger, ledger_sheet)
+    return None
 
 
 def add_transaction(add_transaction: AddTransaction, ledger_sheet: str):
@@ -29,3 +42,4 @@ def add_transaction(add_transaction: AddTransaction, ledger_sheet: str):
     ).dict()
     post_to_db(record, record["id"], ledger_sheet)
     return
+
