@@ -87,8 +87,9 @@ def who_paid() -> str:
 
 def how_to_split_transaction(amt: float, who_paid: str) -> float:
     """ returns what the other person pays """
-    OPTION_SPLITS = ["50% / 50%", "100% the other person", f"100% {who_paid}", "60% Nick, 40% Jill"]
-    OPTION_MATH = [0.5, 1.0, 0.0, 0.4]
+    OPTION_SPLITS = ["50% / 50%", "100% the other person", f"100% {who_paid}, so no one owes",
+                     "60% Nick, 40% Jill", "Custom"]
+    OPTION_MATH = [0.5, 1.0, 0.0, 0.4, 1.0]
     if who_paid == 'Jill':
         OPTION_MATH[3] = 0.6
 
@@ -96,12 +97,10 @@ def how_to_split_transaction(amt: float, who_paid: str) -> float:
     while not valid_split:
         print("\r\nHow would you like to split the transaction? ")
         options = "Options include:\r\n\r\n"
-        options += "\t1. 50%/50%\r\n"
-        options += "\t2. 100% the other person owes\r\n"
-        options += f"\t3. 100% {who_paid}, so nothing is owed\r\n"
-        options += "\t4. 60% Nick, 40% Jill\r\n\r\n"
+        for i in range(1, len(OPTION_SPLITS) + 1):
+            options += f"\t{i}. {OPTION_SPLITS[i-1]}\r\n"
         print(options)
-        split_option = input("Enter the number (1-4) for the option you want: ")
+        split_option = input("\r\nEnter the number (1-5) for the option you want: ")
         try:
             split_option = int(split_option.strip())
             valid_split = True
@@ -109,6 +108,23 @@ def how_to_split_transaction(amt: float, who_paid: str) -> float:
             print(f"\r\nSorry, the provided '{split_option}' didn't seem to be numeric 1-4. Please try again.")
             time.sleep(2)
 
+    if split_option == 5:
+        print(f"\r\nYou've selected 'custom' splitting.")
+        val = -1.0
+        while val == -1.0:
+            val = input(f"How much does the {OTHER_PERSON[who_paid]} owe? ($) ")
+            try:
+                val = val.split('$')[-1].strip()
+                val = float(val)
+                if val > amt or val < 0.0:
+                    print(f"'{val}' is an invalid amount. Please try again.\r\n")
+                    val = -1.0
+                    continue
+                val = round(val, 2)
+            except:
+                print(f"'{val}' is an invalid amount. Please try again.\r\n")
+                time.sleep(2)
+        amt = val
     print(f"Split option is: {OPTION_SPLITS[split_option - 1]}\r\n")
     return round(OPTION_MATH[split_option - 1] * amt, 2)
 
