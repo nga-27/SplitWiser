@@ -1,6 +1,6 @@
 import time
 
-from .utils import which_account, handle_get_payload, OTHER_PERSON
+from .utils import which_account, handle_get_payload, OTHER_PERSON, terminal_pretty_print_spacer
 
 
 def intro_and_choose_account() -> str:
@@ -12,22 +12,13 @@ def intro_and_choose_account() -> str:
     return account_url
 
 def format_transactions(transactions: dict) -> str:
-    full_string = "\r\n\r\n------------------------------------------------------------------"
-    full_string += "\r\nID#: Trans Name\t\t\tAmount\t\tWho Paid\tOther Person Owes\r\n\r\n"
+    full_string = "-" * 45
+    full_string = f"\r\n\r\n{full_string}"
+    full_string += "\r\nID#: Trans Name\t\t\t\tAmount\t\tWho Paid\tOther Person Owes\r\n\r\n"
     for id, trans in transactions.items():
         t_string = f"{int(id)}: "
         t_string += f"'{trans['item']}'"
-        line_len = len(t_string)
-
-        print(t_string, len(t_string), len("\t"))
-        if line_len < 33:
-            t_string += "\t"
-        if line_len < 25:
-            t_string += "\t"
-        if line_len < 17:
-            t_string += "\t"
-        if line_len < 9:
-            t_string += "\t"
+        t_string += terminal_pretty_print_spacer(t_string)
 
         amt = 0.0
         payer = ''
@@ -36,8 +27,10 @@ def format_transactions(transactions: dict) -> str:
                 amt = val
                 payer = person
 
-        t_string += f"${amt}\t\t"
-        t_string += f"{payer}\t"
+        amt_str = f"${amt}"
+        amt_str += terminal_pretty_print_spacer(amt_str, max_tabs=2)
+        t_string += f"{amt_str}"
+        t_string += f"{payer}\t\t"
         t_string += f"${trans['owed_by_id'][OTHER_PERSON[payer]]}\r\n"
         full_string += t_string
     return full_string

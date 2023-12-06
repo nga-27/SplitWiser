@@ -36,3 +36,14 @@ def handle_get_payload(url) -> dict:
         return data.json()
     else:
         return {}
+
+def terminal_pretty_print_spacer(line_str: str, max_tabs: int = 5) -> str:
+    """ returns tabs! """
+    t_string = ""
+    line_len = len(line_str)
+    lengths = [40, 32, 24, 16, 8]
+    real_lengths = lengths[len(lengths)-max_tabs:]
+    for length in real_lengths:
+        if line_len < length:
+            t_string += "\t"
+    return t_string
