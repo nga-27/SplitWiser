@@ -1,5 +1,3 @@
-import datetime
-
 from fastapi import APIRouter, HTTPException
 
 from api.models.models import AddTransaction

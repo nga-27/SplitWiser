@@ -22,7 +22,6 @@ def delete_transaction(id: str, ledger_sheet: str) -> Union[None, str]:
 
 def add_transaction(add_transaction: AddTransaction, ledger_sheet: str):
     DB = get_db()
-    num_records = len(DB[ledger_sheet])
     people = DB['People']['__list__']
 
     paid = {add_transaction.paid_by_name: round(add_transaction.paid_amount, 2)}
