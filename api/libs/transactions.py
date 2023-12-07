@@ -35,11 +35,11 @@ def add_transaction(add_transaction: AddTransaction, ledger_sheet: str):
 
     record = Transaction(
         date=datetime.datetime.now().strftime("%m/%d/%Y"),
-        id=str(num_records),
         item=add_transaction.item,
         paid_by_id=paid,
-        owed_by_id=owes
+        owed_by_id=owes,
+        id='0'
     ).dict()
-    post_to_db(record, record["id"], ledger_sheet)
+    post_to_db(record, ledger_sheet)
     return
 
