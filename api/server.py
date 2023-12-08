@@ -5,13 +5,14 @@ import datetime
 from dotenv import load_dotenv
 from fastapi import FastAPI, Response
 
-from api.routers import summary, transactions
+from api.routers import summary, transactions, payments
 from api.libs.db import reset_db, init_db, save_db, archive_db
 
 app = FastAPI()
 
 app.include_router(summary.router)
 app.include_router(transactions.router)
+app.include_router(payments.router)
 
 @app.get("/")
 async def root():

@@ -1,14 +1,8 @@
 import time
 
-from .utils import which_account, handle_get_payload, format_transactions, handle_delete_id
-
-def intro_and_choose_account() -> str:
-    print("\r\n\r\nDeleting requires the 'id' of the transaction.")
-    time.sleep(1)
-    account = which_account()
-    account_list = account.lower().split(' ')
-    account_url = '_'.join(account_list)
-    return account_url
+from .utils import (
+    handle_get_payload, format_transactions, handle_delete_id, intro_and_choose_account
+)
 
 def pick_transaction_to_delete(num_transactions: int) -> int:
     time.sleep(1)
@@ -39,7 +33,7 @@ def pick_transaction_to_delete(num_transactions: int) -> int:
 ##########################################
 
 def delete_handler(base_url: str) -> bool:
-    account = intro_and_choose_account()
+    account = intro_and_choose_account("Deleting requires the 'id' of the transaction.")
     transactions = handle_get_payload(f"{base_url}/transactions/{account}")
     str_transactions = format_transactions(transactions)
     print(str_transactions)

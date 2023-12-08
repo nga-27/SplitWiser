@@ -30,6 +30,15 @@ def which_account() -> str:
     return ACCOUNTS[name - 1]
 
 
+def intro_and_choose_account(message: str) -> str:
+    print(f"\r\n{message}\r\n")
+    time.sleep(1)
+    account = which_account()
+    account_list = account.lower().split(' ')
+    account_url = '_'.join(account_list)
+    return account_url
+
+
 def handle_get_payload(url) -> dict:
     data = requests.get(url)
     if data.status_code == 200:
