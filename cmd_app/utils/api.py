@@ -1,13 +1,13 @@
 import requests
 
-def handle_get_payload(url) -> dict:
+def handle_get_payload(url: str) -> dict:
     data = requests.get(url)
     if data.status_code == 200:
         return data.json()
     else:
         return {}
 
-def handle_delete_id(url) -> bool:
+def handle_delete_id(url: str) -> bool:
     response = requests.delete(url)
     return response.status_code == 201
 

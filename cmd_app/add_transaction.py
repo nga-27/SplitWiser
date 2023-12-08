@@ -1,6 +1,6 @@
 import time
 
-from cmd_app.utils.prompts import which_account
+from cmd_app.utils.prompts import which_account, who_paid
 from cmd_app.utils.api import handle_post
 from cmd_app.utils.constants import OTHER_PERSON
 
@@ -37,29 +37,6 @@ def get_valid_amount(message: str) -> float:
         if verify != '' and verify.lower() != 'yes':
             amt = -1.0
     return amt
-
-def who_paid() -> str:
-    print("")
-    okay_for_transaction = False
-    while not okay_for_transaction:
-        person = ""
-        while person not in ('Jill', 'Nick'):
-            person = input("Who paid for this transaction? (Jill or Nick) ")
-            if 'jill' not in person.lower() and 'nick' not in person.lower():
-                print("Hmmm. That didn't look like 'Jill' or 'Nick'. Please try again.\r\n")
-                person = ""
-                time.sleep(2)
-                continue
-            if 'jill' in person.lower():
-                person = 'Jill'
-            else:
-                person = 'Nick'
-        
-        is_fine = input(f"Cool. Are you good with '{person}' paying for this? (hit enter if yes) ")
-        if is_fine == '':
-            okay_for_transaction = True
-
-    return person
 
 def how_to_split_transaction(amt: float, who_paid: str) -> float:
     """ returns what the other person pays """
@@ -111,7 +88,7 @@ def add_handler(base_url: str) -> bool:
     print("\r\nCool, let's **ADD** a transaction. We'll start by asking some questions about it...")
     time.sleep(2)
 
-    transaction_name = get_valid_name("First, what name should we give this transaction?")
+    transaction_name = get_valid_name("First, what NAME should we give this transaction?")
     account = which_account()
     person = who_paid()
     person_paid = get_valid_amount(f"Cool. How much did {person} pay?")

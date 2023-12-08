@@ -6,6 +6,5 @@ from cmd_app.utils.ui import format_transactions
 def view_handler(base_url: str) -> bool:
     account = intro_and_choose_account("Sweet, let's check out the transactions that exist.")
     transactions = handle_get_payload(f"{base_url}/transactions/{account}")
-    str_transactions = format_transactions(transactions)
-    print(str_transactions)
+    format_transactions(transactions)
     return True

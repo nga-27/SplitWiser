@@ -1,3 +1,5 @@
+from typing import Union
+
 from .constants import OTHER_PERSON
 
 def terminal_pretty_print_spacer(line_str: str, max_tabs: int = 5) -> str:
@@ -11,7 +13,8 @@ def terminal_pretty_print_spacer(line_str: str, max_tabs: int = 5) -> str:
             t_string += "\t"
     return t_string
 
-def format_transactions(transactions: dict) -> str:
+
+def format_transactions(transactions: dict, return_str: bool = False) -> Union[None, str]:
     full_string = "-" * 85
     full_string = f"\r\n\r\n{full_string}"
     full_string += "\r\nID#: Trans Name\t\t\t\tAmount\t\tWho Paid\tOther Person Owes\r\n\r\n"
@@ -33,4 +36,9 @@ def format_transactions(transactions: dict) -> str:
         t_string += f"{payer}\t\t"
         t_string += f"${trans['owed_by_id'][OTHER_PERSON[payer]]}\r\n"
         full_string += t_string
-    return full_string
+    
+    if return_str:
+        return full_string
+    print(full_string)
+    print("")
+    return
