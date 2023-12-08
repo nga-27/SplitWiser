@@ -1,7 +1,8 @@
 import time
-import requests
 
-from .utils import which_account, OTHER_PERSON
+from cmd_app.utils.prompts import which_account
+from cmd_app.utils.api import handle_post
+from cmd_app.utils.constants import OTHER_PERSON
 
 
 def get_valid_name(message: str) -> str:
@@ -134,6 +135,6 @@ def add_handler(base_url: str) -> bool:
     }
     db_table_name_list = account.lower().split(' ')
     db_table_name = '_'.join(db_table_name_list)
-    requests.post(f"{base_url}/transactions/{db_table_name}", json=transaction)
+    handle_post(f"{base_url}/transactions/{db_table_name}", transaction)
         
     return True

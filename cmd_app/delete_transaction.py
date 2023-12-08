@@ -1,8 +1,8 @@
 import time
 
-from .utils import (
-    handle_get_payload, format_transactions, handle_delete_id, intro_and_choose_account
-)
+from cmd_app.utils.prompts import intro_and_choose_account
+from cmd_app.utils.ui import format_transactions
+from cmd_app.utils.api import handle_delete_id, handle_get_payload
 
 def pick_transaction_to_delete(num_transactions: int) -> int:
     time.sleep(1)

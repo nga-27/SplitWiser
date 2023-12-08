@@ -1,4 +1,6 @@
-from .utils import handle_get_payload, format_transactions, intro_and_choose_account
+from cmd_app.utils.prompts import intro_and_choose_account
+from cmd_app.utils.api import handle_get_payload
+from cmd_app.utils.ui import format_transactions
 
 
 def view_handler(base_url: str) -> bool:
