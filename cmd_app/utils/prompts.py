@@ -34,6 +34,8 @@ def intro_and_choose_account(message: str) -> str:
     account = which_account()
     account_list = account.lower().split(' ')
     account_url = '_'.join(account_list)
+    if '-' in account_list:
+        account_url = f"{account_list[0]}/{account_list[2]}_{account_list[3]}"
     return account_url
 
 

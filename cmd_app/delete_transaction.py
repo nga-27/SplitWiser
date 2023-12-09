@@ -37,7 +37,7 @@ def delete_handler(base_url: str) -> bool:
     if is_account_empty(len(transactions)):
         return True
 
-    format_transactions(transactions)
+    format_transactions(transactions, account)
     id_to_delete = pick_transaction_to_delete(len(transactions))
     if id_to_delete == "menu":
         return True

@@ -55,3 +55,13 @@ def delete_jill_and_nick_transaction(id: str):
     if res is not None:
         raise HTTPException(status_code=404, detail=res)
     return "Transaction deleted"
+
+#########################################################
+
+@router.get("/archived/jill_and_nick", tags=["Transaction"], status_code=200)
+def get_archived_jill_and_nick_transactions() -> dict:
+    return get_transactions('Archived - Jill and Nick')
+
+@router.get("/archived/house_avery", tags=["Transaction"], status_code=200)
+def get_archived_house_avery_transactions() -> dict:
+    return get_transactions('Archived - House Avery')
