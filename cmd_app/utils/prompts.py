@@ -64,7 +64,7 @@ def who_paid(is_settle_up_payment: bool = False) -> str:
     while not okay_for_transaction:
         person = ""
         while person not in ('Jill', 'Nick'):
-            person = input(f"Who paid {first_input}? (Jill or Nick) ")
+            person = input(f"Who {first_input}? (Jill or Nick) ")
             if 'jill' not in person.lower() and 'nick' not in person.lower():
                 print("Hmmm. That didn't look like 'Jill' or 'Nick'. Please try again.\r\n")
                 person = ""

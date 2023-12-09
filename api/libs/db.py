@@ -63,3 +63,15 @@ def patch_entire_table(table_data: dict, table: str) -> None:
 
 def archive_db(src_path: str) -> None:
     archive_xlsx_file(src_path)
+
+def reorder_table(table: str) -> None:
+    db = read_db()
+    table_data = db[table]
+    updated_table = {}
+    counter = 0
+    for _, record in table_data.items():
+        updated_table[str(counter)] = record
+        counter += 1
+    db[table] = updated_table
+    return update_db(db)
+

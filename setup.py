@@ -22,7 +22,7 @@ URL = 'https://github.mmm.com/nga-27/SplitWiser'
 EMAIL = 'namell91@gmail.com'
 AUTHOR = 'Nick Amell'
 REQUIRES_PYTHON = '>=3.11.0'
-VERSION = '0.0.1'
+VERSION = '0.1.0'
 
 # What packages are required for this module to be executed?
 REQUIRES = [
@@ -35,7 +35,8 @@ REQUIRES = [
     "pydantic",
     "psutil",
     "requests",
-    "XlsxWriter"
+    "XlsxWriter",
+    "colorama"
 ]
 
 REQUIRES_DEV = [

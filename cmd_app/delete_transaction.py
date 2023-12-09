@@ -46,4 +46,6 @@ def delete_handler(base_url: str) -> bool:
         print(f"\r\n\r\n#{id_to_delete} successfully deleted!")
     else:
         print(f"\r\n\r\nSomething went wrong, as transaction #{id_to_delete} failed to delete.")
+    time.sleep(1)
+    print("")
     return True
