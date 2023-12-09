@@ -5,7 +5,7 @@ import datetime
 
 import pandas as pd
 
-from api.models.models import Transaction
+from api.models.models import Transaction, Payment
 
 
 def money_by_involved_handler(transaction_dict: dict, index: int, key: str, _db: dict) -> Dict[str, float]:
@@ -70,6 +70,29 @@ def load_people_involved(raw_df: pd.DataFrame) -> dict:
     return sub_dict
 
 
+def handle_payment_history(raw_df: pd.DataFrame) -> dict:
+    pay_dict = {}
+    raw_df.dropna(inplace=True)
+    df_as_dict = raw_df.to_dict()
+    for i in range(len(df_as_dict['Date'])):
+        date_val = df_as_dict['Date'][i]
+        if not isinstance(date_val, str):
+            date_val = date_val.strftime("%m/%d/%Y")
+        amount = df_as_dict['Amount'][i]
+        if not isinstance(amount, float):
+            amount = float(amount)
+
+        payment = Payment(
+            id=str(i),
+            date=date_val,
+            account=df_as_dict['Account'][i].strip(),
+            payer=df_as_dict['Payer'][i].strip(),
+            amount=amount
+        )
+        pay_dict[str(i)] = payment.dict()
+    return pay_dict
+
+
 def convert_db_trans_to_xlsx_trans(db_table: dict) -> pd.DataFrame:
     COLUMNS = ['Date', 'Transaction Item', 'Jill Paid', 'Nick Paid', 'Jill Owes', 'Nick Owes']
     df_as_dict = {col: [] for col in COLUMNS}
@@ -95,6 +118,18 @@ def convert_db_people_to_xlsx_people(person_table: dict) -> pd.DataFrame:
             df_as_dict[col] = [val for _, val in person_table[col].items()]
     df_db = pd.DataFrame.from_dict(df_as_dict)
     df_db.set_index('Person', inplace=True)
+    return df_db
+
+def convert_db_payment_to_xlsx_payment(db_table: dict) -> pd.DataFrame:
+    COLUMNS = ['Date', 'Account', 'Payer', 'Amount']
+    df_as_dict = {col: [] for col in COLUMNS}
+    for _, payments in db_table.items():
+        df_as_dict[COLUMNS[0]].append(payments['date'])
+        df_as_dict[COLUMNS[1]].append(payments['account'])
+        df_as_dict[COLUMNS[2]].append(payments['payer'])
+        df_as_dict[COLUMNS[3]].append(payments['amount'])
+    df_db = pd.DataFrame.from_dict(df_as_dict)
+    df_db.set_index('Date', inplace=True)
     return df_db
 
 
@@ -131,20 +166,27 @@ def get_real_xlsx_db(xlsx_path: str) -> dict:
     modded_db['People'] = load_people_involved(df_db)
     modded_db['Summary'] = handle_loading_summary_sheet(df_db['Summary'])
     for key in df_db:
-        if key not in ('Summary', 'People'):
+        if key not in ('Summary', 'People', 'Payment History'):
             modded_db[key] = handle_transaction_sheets(df_db[key], modded_db)
+        if key in ('Payment History'):
+            modded_db[key] = handle_payment_history(df_db[key])
     return modded_db
 
 
 def set_real_xlsx_db(db_dict: dict, db_path: str) -> None:
-    SHEETS = ['Summary', 'House Avery', 'Jill and Nick', 'Archived - House Avery', 'Archived - Jill and Nick']
+    SHEETS = [
+        'Summary', 'House Avery', 'Jill and Nick', 'Archived - House Avery',
+        'Archived - Jill and Nick', 'Payment History'
+    ]
     xlsx_as_dict = {sheet: {} for sheet in SHEETS}
     with pd.ExcelWriter(db_path) as writer:  
         for sheet in SHEETS:
-            if sheet not in ('Summary'):
-                xlsx_as_dict[sheet] = convert_db_trans_to_xlsx_trans(db_dict[sheet])
-            else:
+            if sheet in ('Payment History'):
+                xlsx_as_dict[sheet] = convert_db_payment_to_xlsx_payment(db_dict[sheet])
+            elif sheet in ('Summary'):
                 xlsx_as_dict[sheet] = convert_db_people_to_xlsx_people(db_dict[sheet])
+            else:
+                xlsx_as_dict[sheet] = convert_db_trans_to_xlsx_trans(db_dict[sheet])
             xlsx_as_dict[sheet].to_excel(writer, sheet_name=sheet)
 
             worksheet = writer.sheets[sheet]

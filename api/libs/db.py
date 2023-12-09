@@ -1,7 +1,6 @@
 import os
 import json
-
-import pandas as pd
+from typing import Dict
 
 from api.libs.xlsx import get_real_xlsx_db, set_real_xlsx_db, archive_xlsx_file
 
@@ -39,21 +38,25 @@ def reset_db():
     return
 
 # Public-facing init_db structure for managing functionality
-def init_db(xlsx_path: str) -> dict:
+def init_db(xlsx_path: str) -> None:
     reset_db()
     modded_db = get_real_xlsx_db(xlsx_path)
     update_db(modded_db)
     return
 
-def get_db() -> dict:
+def get_db() -> Dict[str, dict]:
     return read_db()
 
-def post_to_db(obj_to_add: dict, id: str, table: str) -> dict:
+def post_to_db(obj_to_add: dict, table: str) -> None:
     db = read_db()
-    db[table][id] = obj_to_add
+    db_num_records = len(db[table])
+    for _id in range(db_num_records - 1, -1, -1):
+        db[table][str(_id)]['id'] = str(_id + 1)
+        db[table][str(_id + 1)] = db[table][str(_id)]
+    db[table]['0'] = obj_to_add
     return update_db(db)
 
-def patch_entire_table(table_data: dict, table: str) -> dict:
+def patch_entire_table(table_data: dict, table: str) -> None:
     db = read_db()
     db[table] = table_data
     return update_db(db)

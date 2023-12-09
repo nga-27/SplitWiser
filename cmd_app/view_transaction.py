@@ -1,21 +1,13 @@
 import time
 
-from .utils import which_account, handle_get_payload, format_transactions
+from cmd_app.utils.prompts import intro_and_choose_account
+from cmd_app.utils.api import handle_get_payload
+from cmd_app.utils.ui import format_transactions
 
-
-def intro_and_choose_account() -> str:
-    print("\r\nSweet, let's check out the transactions that exist.\r\n")
-    time.sleep(1)
-    account = which_account()
-    account_list = account.lower().split(' ')
-    account_url = '_'.join(account_list)
-    return account_url
-
-##########################################
 
 def view_handler(base_url: str) -> bool:
-    account = intro_and_choose_account()
+    account = intro_and_choose_account("Sweet, let's check out the transactions that exist.")
     transactions = handle_get_payload(f"{base_url}/transactions/{account}")
-    str_transactions = format_transactions(transactions)
-    print(str_transactions)
+    format_transactions(transactions, account)
+    time.sleep(5)
     return True

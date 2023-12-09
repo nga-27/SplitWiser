@@ -1,50 +1,45 @@
 import time
 
-from .utils import which_account, handle_get_payload, format_transactions, handle_delete_id
+from cmd_app.utils.prompts import intro_and_choose_account, input_id_handler
+from cmd_app.utils.ui import format_transactions
+from cmd_app.utils.api import handle_delete_id, handle_get_payload
 
-def intro_and_choose_account() -> str:
-    print("\r\n\r\nDeleting requires the 'id' of the transaction.")
+def pick_transaction_to_delete(num_transactions: int) -> str:
     time.sleep(1)
-    account = which_account()
-    account_list = account.lower().split(' ')
-    account_url = '_'.join(account_list)
-    return account_url
-
-def pick_transaction_to_delete(num_transactions: int) -> int:
-    time.sleep(1)
-    id_ = -1
-    while id_ == -1:
+    id_ = ""
+    while id_ == "":
         id_str = input("\r\n\r\nSeeing the transaction IDs above, which one to delete? ('menu' to return to main menu) ")
-        id_str = id_str.strip()
-        if 'menu' in id_str.lower():
-            return -1
-        try:
-            id_ = int(id_str)
-            if id_ > num_transactions - 1 or id_ < 0:
-                print(f"'{id_}' is not in range of 0 - {num_transactions - 1}. Please try again.\r\n")
-                time.sleep(1)
-                id_ = -1
-                continue
-        except:
-            print(f"'{id_}' is not a valid number in range of 0 - {num_transactions - 1}. Please try again.\r\n")
-            time.sleep(1)
-            id_ = -1
+        id_ = input_id_handler(id_str, num_transactions)
+        if id_ == "menu":
+            break
+        if id_ == "":
+            continue
 
         validate = input(f"To clarify, you wish to delete transaction #{id_}, correct? (enter is yes, 'N' to redo) ")
         validate = validate.strip()
         if 'N' in validate.upper():
-            id_ = -1
+            id_ = ""
     return id_
+
+def is_account_empty(num_transactions: int) -> bool:
+    if num_transactions == 0:
+        print("\r\nSorry, there are no transactions to delete here!")
+        time.sleep(2)
+        print("\r\n")
+        return True
+    return False
 
 ##########################################
 
 def delete_handler(base_url: str) -> bool:
-    account = intro_and_choose_account()
+    account = intro_and_choose_account("Deleting requires the 'id' of the transaction.")
     transactions = handle_get_payload(f"{base_url}/transactions/{account}")
-    str_transactions = format_transactions(transactions)
-    print(str_transactions)
+    if is_account_empty(len(transactions)):
+        return True
+
+    format_transactions(transactions, account)
     id_to_delete = pick_transaction_to_delete(len(transactions))
-    if id_to_delete == -1:
+    if id_to_delete == "menu":
         return True
     
     if handle_delete_id(f"{base_url}/transactions/{account}/{id_to_delete}"):

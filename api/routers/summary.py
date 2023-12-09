@@ -6,7 +6,6 @@ router = APIRouter(
     prefix="/summary"
 )
 
-
 @router.get("/", tags=["Summary"])
 def get_summary():
     update_summary()

@@ -1,7 +1,8 @@
 import time
-import requests
 
-from .utils import which_account, OTHER_PERSON
+from cmd_app.utils.prompts import which_account, who_paid, get_numerical_valid_amount
+from cmd_app.utils.api import handle_post
+from cmd_app.utils.constants import OTHER_PERSON
 
 
 def get_valid_name(message: str) -> str:
@@ -12,53 +13,6 @@ def get_valid_name(message: str) -> str:
         name2 = input(f"Nice. Cool with '{name}'? (just hit enter if yes, or 'N' if to redo it.)").upper()
     return name
 
-def get_valid_amount(message: str) -> float:
-    amt = -1.0
-    while amt < 0.0:
-        print("")
-        ew_input = input(f"{message} ")
-        if '$' in ew_input:
-            ew_input = ew_input.split('$')[-1]
-            ew_input = ew_input.strip()
-        try:
-            amt = float(ew_input)
-            if amt < 0.0:
-                print("I'm sorry, but a payment must be $0 or more.")
-                time.sleep(2)
-                continue
-        except ValueError:
-            amt = -1.0
-            print("I'm sorry, that didn't seem to be a valid amount. Try in the form of XXX.YY or XXX.")
-            time.sleep(2)
-            continue
-
-        verify = input(f"Are you happy with the amount of ${amt}? (enter or yes) ")
-        if verify != '' and verify.lower() != 'yes':
-            amt = -1.0
-    return amt
-
-def who_paid() -> str:
-    print("")
-    okay_for_transaction = False
-    while not okay_for_transaction:
-        person = ""
-        while person not in ('Jill', 'Nick'):
-            person = input("Who paid for this transaction? (Jill or Nick) ")
-            if 'jill' not in person.lower() and 'nick' not in person.lower():
-                print("Hmmm. That didn't look like 'Jill' or 'Nick'. Please try again.\r\n")
-                person = ""
-                time.sleep(2)
-                continue
-            if 'jill' in person.lower():
-                person = 'Jill'
-            else:
-                person = 'Nick'
-        
-        is_fine = input(f"Cool. Are you good with '{person}' paying for this? (hit enter if yes) ")
-        if is_fine == '':
-            okay_for_transaction = True
-
-    return person
 
 def how_to_split_transaction(amt: float, who_paid: str) -> float:
     """ returns what the other person pays """
@@ -110,10 +64,10 @@ def add_handler(base_url: str) -> bool:
     print("\r\nCool, let's **ADD** a transaction. We'll start by asking some questions about it...")
     time.sleep(2)
 
-    transaction_name = get_valid_name("First, what name should we give this transaction?")
+    transaction_name = get_valid_name("First, what NAME should we give this transaction?")
     account = which_account()
     person = who_paid()
-    person_paid = get_valid_amount(f"Cool. How much did {person} pay?")
+    person_paid = get_numerical_valid_amount(f"Cool. How much did {person} pay?")
     other_person = how_to_split_transaction(person_paid, person)
 
     time.sleep(1)
@@ -134,6 +88,6 @@ def add_handler(base_url: str) -> bool:
     }
     db_table_name_list = account.lower().split(' ')
     db_table_name = '_'.join(db_table_name_list)
-    requests.post(f"{base_url}/transactions/{db_table_name}", json=transaction)
+    handle_post(f"{base_url}/transactions/{db_table_name}", transaction)
         
     return True
