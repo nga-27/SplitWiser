@@ -1,6 +1,6 @@
 import time
 
-from cmd_app.utils.prompts import which_account, who_paid
+from cmd_app.utils.prompts import which_account, who_paid, get_numerical_valid_amount
 from cmd_app.utils.api import handle_post
 from cmd_app.utils.constants import OTHER_PERSON
 
@@ -13,30 +13,6 @@ def get_valid_name(message: str) -> str:
         name2 = input(f"Nice. Cool with '{name}'? (just hit enter if yes, or 'N' if to redo it.)").upper()
     return name
 
-def get_valid_amount(message: str) -> float:
-    amt = -1.0
-    while amt < 0.0:
-        print("")
-        ew_input = input(f"{message} ")
-        if '$' in ew_input:
-            ew_input = ew_input.split('$')[-1]
-            ew_input = ew_input.strip()
-        try:
-            amt = float(ew_input)
-            if amt < 0.0:
-                print("I'm sorry, but a payment must be $0 or more.")
-                time.sleep(2)
-                continue
-        except ValueError:
-            amt = -1.0
-            print("I'm sorry, that didn't seem to be a valid amount. Try in the form of XXX.YY or XXX.")
-            time.sleep(2)
-            continue
-
-        verify = input(f"Are you happy with the amount of ${amt}? (enter or yes) ")
-        if verify != '' and verify.lower() != 'yes':
-            amt = -1.0
-    return amt
 
 def how_to_split_transaction(amt: float, who_paid: str) -> float:
     """ returns what the other person pays """
@@ -91,7 +67,7 @@ def add_handler(base_url: str) -> bool:
     transaction_name = get_valid_name("First, what NAME should we give this transaction?")
     account = which_account()
     person = who_paid()
-    person_paid = get_valid_amount(f"Cool. How much did {person} pay?")
+    person_paid = get_numerical_valid_amount(f"Cool. How much did {person} pay?")
     other_person = how_to_split_transaction(person_paid, person)
 
     time.sleep(1)

@@ -7,7 +7,7 @@ def which_account() -> str:
     while name not in (1, 2):
         options = "\r\nSplitWiser Accounts:\r\n\t1. House Avery\r\n\t2. Jill and Nick"
         print(options)
-        name = input("\r\nAlright, which SplitWiser list should we use? (1 or 2) ").strip()
+        name = input("\r\nAlright, which SplitWiser account should we use? (1 or 2) ").strip()
         try:
             name = int(name)
             if name not in (1, 2):
@@ -73,3 +73,29 @@ def who_paid(is_settle_up_payment: bool = False) -> str:
             okay_for_transaction = True
 
     return person
+
+
+def get_numerical_valid_amount(message: str) -> float:
+    amt = -1.0
+    while amt < 0.0:
+        print("")
+        ew_input = input(f"{message} ")
+        if '$' in ew_input:
+            ew_input = ew_input.split('$')[-1]
+            ew_input = ew_input.strip()
+        try:
+            amt = float(ew_input)
+            if amt < 0.0:
+                print("I'm sorry, but a payment must be $0 or more.")
+                time.sleep(2)
+                continue
+        except ValueError:
+            amt = -1.0
+            print("I'm sorry, that didn't seem to be a valid amount. Try in the form of XXX.YY or XXX.")
+            time.sleep(2)
+            continue
+
+        verify = input(f"Are you happy with the amount of ${amt}? (enter or 'yes') ")
+        if verify != '' and verify.lower() != 'yes':
+            amt = -1.0
+    return amt
