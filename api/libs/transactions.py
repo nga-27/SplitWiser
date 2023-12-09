@@ -3,6 +3,7 @@ from typing import Union
 
 from api.libs.db import get_db, post_to_db, patch_entire_table
 from api.libs.summary import update_summary
+from api.libs.utils import transaction_payers_and_debtors
 from api.models.models import AddTransaction, Transaction
 
 
@@ -25,14 +26,7 @@ def delete_transaction(id: str, ledger_sheet: str) -> Union[None, str]:
 def add_transaction(add_transaction: AddTransaction, ledger_sheet: str):
     DB = get_db()
     people = DB['People']['__list__']
-
-    paid = {add_transaction.paid_by_name: round(add_transaction.paid_amount, 2)}
-    owes = {add_transaction.paid_by_name: 0}
-    for person in people:
-        if person not in paid:
-            paid[person] = 0
-        if person not in owes:
-            owes[person] = round(add_transaction.other_person_owes, 2)
+    paid, owes = transaction_payers_and_debtors(add_transaction, people)
 
     record = Transaction(
         date=datetime.datetime.now().strftime("%m/%d/%Y"),
