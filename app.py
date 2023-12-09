@@ -4,11 +4,15 @@ import subprocess
 import threading
 import time
 import requests
+
 from dotenv import load_dotenv
+from colorama import just_fix_windows_console
 
 from cmd_app.main_handler import run
 
+just_fix_windows_console()
 load_dotenv()
+
 PARTIAL_BASE = os.getenv("PARTIAL_BASE_URL", "http://localhost:")
 PORT_NUMBER = os.getenv("API_PORT_NUMBER", "8765")
 BASE_URL = PARTIAL_BASE + PORT_NUMBER

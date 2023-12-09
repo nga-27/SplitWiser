@@ -89,5 +89,5 @@ def add_handler(base_url: str) -> bool:
     db_table_name_list = account.lower().split(' ')
     db_table_name = '_'.join(db_table_name_list)
     handle_post(f"{base_url}/transactions/{db_table_name}", transaction)
-        
+
     return True

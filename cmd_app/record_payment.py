@@ -1,3 +1,5 @@
+import time
+
 from cmd_app.utils.api import handle_post, handle_get_payload
 from cmd_app.utils.prompts import intro_and_choose_account, who_paid
 
@@ -30,4 +32,7 @@ def record_handler(base_url: str) -> bool:
     person = who_paid(is_settle_up_payment=True)
     amount = get_balance_of_account(base_url, account, person)
     post_payment(base_url, account, person, amount)
+    print("\r\nPayment was made successfully!")
+    time.sleep(2)
+    print("\r\n")
     return True
