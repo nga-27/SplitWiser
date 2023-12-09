@@ -42,3 +42,25 @@ def format_transactions(transactions: dict, return_str: bool = False) -> Union[N
     print(full_string)
     print("")
     return
+
+
+def format_balances(summary: dict, return_str: bool = False) -> Union[None, str]:
+    full_string = "-" * 85
+    full_string = f"\r\n\r\n{full_string}"
+    full_string += "\r\nPerson\t\tTotal\t\tHouse Avery\t\tJill and Nick\r\n\r\n"
+    
+    line_1 = f"Jill\t\t{summary['Total']['Jill']}\t\t"
+    line_1 += f"{summary['House Avery']['Jill']}\t\t\t"
+    line_1 += f"{summary['Jill and Nick']['Jill']}\r\n"
+
+    line_2 = f"Nick\t\t{summary['Total']['Nick']}\t\t"
+    line_2 += f"{summary['House Avery']['Nick']}\t\t\t"
+    line_2 += f"{summary['Jill and Nick']['Nick']}\r\n"
+
+    full_string += line_1
+    full_string += line_2
+    if return_str:
+        return full_string
+    print(full_string)
+    print("")
+    return

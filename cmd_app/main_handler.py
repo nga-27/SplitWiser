@@ -4,6 +4,7 @@ from cmd_app.add_transaction import add_handler
 from cmd_app.view_transaction import view_handler
 from cmd_app.delete_transaction import delete_handler
 from cmd_app.record_payment import record_handler
+from cmd_app.view_balances import view_balances_handler
 
 OPTION_STATES = {
     "v": "view",
@@ -14,6 +15,8 @@ OPTION_STATES = {
     "delete": "delete",
     "s": "record",
     "settle": "record",
+    "b": "balance",
+    "balance": "balance",
     "e": "exit",
     "exit": "exit"
 }
@@ -25,6 +28,7 @@ def exit_handler(base_url: str) -> bool:
 
 
 ACTION_FUNCTIONS = {
+    "balance": view_balances_handler,
     "view": view_handler,
     "add": add_handler,
     "delete": delete_handler,
@@ -37,11 +41,12 @@ def what_to_do_options():
     matched = None
     while matched is None:
         options = "What would you like to do? Options include:\r\n\r\n"
-        options += "\t- View Transactions (v or view)\r\n"
-        options += "\t- Add Transaction (a or add)\r\n"
-        options += "\t- Delete Transaction (d or delete)\r\n"
-        options += "\t- Settle Up (s or settle)\r\n"
-        options += "\t- Exit (e or exit)"
+        options += "\t- View BALANCES between accounts (b or balance)\r\n"
+        options += "\t- View TRANSACTIONS (v or view)\r\n"
+        options += "\t- ADD transactions (a or add)\r\n"
+        options += "\t- DELETE Transaction (d or delete)\r\n"
+        options += "\t- SETTLE UP (s or settle)\r\n"
+        options += "\t- EXIT (e or exit)"
         print(options)
         passed = input("\r\nSo... what would you like to do? ")
         passed = passed.lower().strip()

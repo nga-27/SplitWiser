@@ -30,6 +30,12 @@ def payment_as_transaction(payment: Payment, db: dict):
     return
 
 
+def handle_archival(payment: Payment, db: dict):
+    account = api_address_to_db_table(payment.account)
+    acc_transactions = db[account]
+    print(acc_transactions)
+
+
 def payment_to_account_handler(db: Dict[str, dict], payment: Payment) -> Tuple[int, str]:
     account = api_address_to_db_table(payment.account)
     payer = payment.payer
@@ -47,7 +53,7 @@ def payment_to_account_handler(db: Dict[str, dict], payment: Payment) -> Tuple[i
 
     if payment.amount == debtor_amount:
         # Now we'll do the archiving!
-        print("")
+        handle_archival(payment, db)
         return 201, "Payment and Settle Up was Successful"
     return 201, "Payment was Successful, but amount was less than a settle up amount."
 
