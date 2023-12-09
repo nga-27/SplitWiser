@@ -21,7 +21,7 @@ OPTION_STATES = {
     "exit": "exit"
 }
 
-def exit_handler(base_url: str) -> bool:
+def exit_handler(_: str) -> bool:
     print("\r\nWe'll start to exit...\r\n")
     time.sleep(1)
     return False
@@ -45,7 +45,7 @@ def what_to_do_options():
         options += "\t- View TRANSACTIONS (v or view)\r\n"
         options += "\t- ADD transactions (a or add)\r\n"
         options += "\t- DELETE Transaction (d or delete)\r\n"
-        options += "\t- SETTLE UP (s or settle)\r\n"
+        options += "\t- SETTLE UP / make a payment (s or settle)\r\n"
         options += "\t- EXIT (e or exit)"
         print(options)
         passed = input("\r\nSo... what would you like to do? ")

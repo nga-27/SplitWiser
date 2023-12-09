@@ -3,20 +3,25 @@ import time
 
 def which_account() -> str:
     name = 0
-    ACCOUNTS = ['House Avery', 'Jill and Nick']
-    while name not in (1, 2):
-        options = "\r\nSplitWiser Accounts:\r\n\t1. House Avery\r\n\t2. Jill and Nick"
+    ACCOUNTS = [
+        'House Avery', 'Jill and Nick', 'Archived - House Avery', 'Archived - Jill and Nick'
+    ]
+    while name not in (range(1, len(ACCOUNTS) + 1)):
+        acc_options = ""
+        for i, item in enumerate(ACCOUNTS):
+            acc_options += f"\r\n\t{i+1}. {item}"
+        options = f"\r\nSplitWiser Accounts:{acc_options}"
         print(options)
-        name = input("\r\nAlright, which SplitWiser account should we use? (1 or 2) ").strip()
+        name = input("\r\nAlright, which SplitWiser account should we use? (1-4) ").strip()
         try:
             name = int(name)
-            if name not in (1, 2):
+            if name not in (range(1, len(ACCOUNTS) + 1)):
                 name = 0
-                print("\r\nSorry, that didn't seem to be a 1 or 2. Please try again.\r\n")
+                print("\r\nSorry, that didn't seem to be 1-4. Please try again.\r\n")
                 time.sleep(2)
         except:
             name = 0
-            print("\r\nSorry, that didn't seem to be a 1 or 2. Please try again.\r\n")
+            print("\r\nSorry, that didn't seem to be 1-4. Please try again.\r\n")
             time.sleep(2)
     print(f"Nice. You've chosen account '{ACCOUNTS[name - 1]}'.")
     time.sleep(2)

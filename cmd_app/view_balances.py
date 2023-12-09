@@ -1,6 +1,5 @@
 import time
 
-from cmd_app.utils.prompts import intro_and_choose_account
 from cmd_app.utils.api import handle_get_payload
 from cmd_app.utils.ui import format_balances
 

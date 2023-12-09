@@ -3,7 +3,7 @@ from typing import Dict, Tuple
 
 from api.models.models import Payment, Transaction
 
-from .db import post_to_db, get_db
+from .db import post_to_db, get_db, patch_entire_table
 from .summary import update_summary
 from .utils import api_address_to_db_table, transaction_payers_and_debtors
 
@@ -33,7 +33,11 @@ def payment_as_transaction(payment: Payment, db: dict):
 def handle_archival(payment: Payment, db: dict):
     account = api_address_to_db_table(payment.account)
     acc_transactions = db[account]
-    print(acc_transactions)
+    archival_name = f"Archived - {account}"
+    for i in range(len(acc_transactions) - 1, -1, -1):
+        transaction = acc_transactions[str(i)]
+        post_to_db(transaction, archival_name)
+    patch_entire_table({}, account)
 
 
 def payment_to_account_handler(db: Dict[str, dict], payment: Payment) -> Tuple[int, str]:
