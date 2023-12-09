@@ -49,6 +49,9 @@ def payment_to_account_handler(db: Dict[str, dict], payment: Payment) -> Tuple[i
     
     if payment.amount > debtor_amount:
         return 400, f"Amount ${payment.amount} exceeds debt of {payer}, which is ${debtor_amount}."
+    
+    if payment.amount <= 0.0:
+        return 400, f"Amount ${payment.amount} is not valid."
 
     # Now we know the debt is okay to pay off!
     payment.date = datetime.datetime.now().strftime("%m/%d/%Y")

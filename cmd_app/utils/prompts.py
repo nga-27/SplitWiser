@@ -1,37 +1,41 @@
 import time
 
 
-def which_account() -> str:
+def which_account(is_for_payment: bool = False) -> str:
     name = 0
     ACCOUNTS = [
         'House Avery', 'Jill and Nick', 'Archived - House Avery', 'Archived - Jill and Nick'
     ]
+    if is_for_payment:
+        ACCOUNTS = ACCOUNTS[0:2]
+    end_of_options = len(ACCOUNTS)
+
     while name not in (range(1, len(ACCOUNTS) + 1)):
         acc_options = ""
         for i, item in enumerate(ACCOUNTS):
             acc_options += f"\r\n\t{i+1}. {item}"
         options = f"\r\nSplitWiser Accounts:{acc_options}"
         print(options)
-        name = input("\r\nAlright, which SplitWiser account should we use? (1-4) ").strip()
+        name = input(f"\r\nAlright, which SplitWiser account should we use? (1-{end_of_options}) ").strip()
         try:
             name = int(name)
             if name not in (range(1, len(ACCOUNTS) + 1)):
                 name = 0
-                print("\r\nSorry, that didn't seem to be 1-4. Please try again.\r\n")
+                print(f"\r\nSorry, that didn't seem to be 1-{end_of_options}. Please try again.\r\n")
                 time.sleep(2)
         except:
             name = 0
-            print("\r\nSorry, that didn't seem to be 1-4. Please try again.\r\n")
+            print(f"\r\nSorry, that didn't seem to be 1-{end_of_options}. Please try again.\r\n")
             time.sleep(2)
     print(f"Nice. You've chosen account '{ACCOUNTS[name - 1]}'.")
     time.sleep(2)
     return ACCOUNTS[name - 1]
 
 
-def intro_and_choose_account(message: str) -> str:
+def intro_and_choose_account(message: str, is_for_payment: bool = False) -> str:
     print(f"\r\n{message}\r\n")
     time.sleep(1)
-    account = which_account()
+    account = which_account(is_for_payment=is_for_payment)
     account_list = account.lower().split(' ')
     account_url = '_'.join(account_list)
     if '-' in account_list:
