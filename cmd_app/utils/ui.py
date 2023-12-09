@@ -46,6 +46,7 @@ def format_transactions(transactions: dict, table: str, return_str: bool = False
 
 
 def format_balances(summary: dict, return_str: bool = False) -> Union[None, str]:
+    # full_string = f"****  {' '.join(table.upper().split('_'))}\r\n"
     full_string = "-" * 85
     full_string = f"\r\n\r\n{full_string}"
     full_string += "\r\nPerson\t\tTotal\t\tHouse Avery\t\tJill and Nick\r\n\r\n"

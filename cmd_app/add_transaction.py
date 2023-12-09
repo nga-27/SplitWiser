@@ -65,7 +65,7 @@ def add_handler(base_url: str) -> bool:
     time.sleep(2)
 
     transaction_name = get_valid_name("First, what NAME should we give this transaction?")
-    account = which_account()
+    account = which_account(is_for_payment=True)
     person = who_paid()
     person_paid = get_numerical_valid_amount(f"Cool. How much did {person} pay?")
     other_person = how_to_split_transaction(person_paid, person)

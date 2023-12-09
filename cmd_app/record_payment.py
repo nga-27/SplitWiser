@@ -7,9 +7,10 @@ def get_balance_of_account(base_url: str, account: str, person: str) -> float:
     summary_data = handle_get_payload(url)
     modified_account_list = account.split('_')
     for i, word in enumerate(modified_account_list):
-        if word == 'And':
+        modified_account_list[i] = word.capitalize()
+        if word.capitalize() == 'And':
             modified_account_list[i] = 'and'
-    modified_account = " ".join([word.capitalize() for word in modified_account_list])
+    modified_account = " ".join(modified_account_list)
     return summary_data[modified_account][person]
 
 

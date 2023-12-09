@@ -80,7 +80,7 @@ def who_paid(is_settle_up_payment: bool = False) -> str:
                 person = 'Nick'
         
         is_fine = input(f"Cool. Are you good with '{person}' {second_input}? (hit enter if yes) ")
-        if is_fine == '':
+        if is_fine == '' or is_fine == 'yes':
             okay_for_transaction = True
 
     return person
@@ -107,6 +107,6 @@ def get_numerical_valid_amount(message: str) -> float:
             continue
 
         verify = input(f"Are you happy with the amount of ${amt}? (enter or 'yes') ")
-        if verify != '' and verify.lower() != 'yes':
+        if verify != '' and verify.strip().lower() != 'yes':
             amt = -1.0
     return amt
