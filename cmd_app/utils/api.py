@@ -1,8 +1,8 @@
 import requests
 
-def handle_get_payload(url: str) -> dict:
+def handle_get_payload(url: str, skip_response: bool = False) -> dict:
     data = requests.get(url)
-    if data.status_code == 200:
+    if data.status_code == 200 and not skip_response:
         return data.json()
     else:
         return {}
