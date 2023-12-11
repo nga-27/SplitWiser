@@ -1,5 +1,5 @@
 import time
-from typing import Tuple
+from typing import Tuple, Union
 
 from .constants import ACCOUNTS, PrintColor
 
@@ -64,7 +64,9 @@ def input_id_handler(id_str: str, num_transactions: int) -> str:
     return str(id_)
 
 
-def who_paid(is_settle_up_payment: bool = False) -> str:
+def who_paid(is_settle_up_payment: bool = False, color: Union[str, None] = None) -> str:
+    if color is None:
+        color = PrintColor.NORMAL
     print("")
     okay_for_transaction = False
     first_input = 'made this payment' if is_settle_up_payment else 'paid for this transaction'
@@ -83,14 +85,17 @@ def who_paid(is_settle_up_payment: bool = False) -> str:
             else:
                 person = 'Nick'
         
-        is_fine = input(f"Cool. Are you good with '{person}' {second_input}? (hit enter if yes) ")
+        msg = f"Cool. Are you good with '{color}{person}{PrintColor.NORMAL}' "
+        msg += f"{second_input}? (hit enter if yes) "
+        is_fine = input(msg)
         if is_fine == '' or is_fine == 'yes':
             okay_for_transaction = True
-
     return person
 
 
-def get_numerical_valid_amount(message: str) -> float:
+def get_numerical_valid_amount(message: str, color: Union[str, None] = None) -> float:
+    if color is None:
+        color = PrintColor.NORMAL
     amt = -1.0
     while amt < 0.0:
         print("")
@@ -110,7 +115,9 @@ def get_numerical_valid_amount(message: str) -> float:
             time.sleep(2)
             continue
 
-        verify = input(f"Are you happy with the amount of ${amt}? (enter or 'yes') ")
+        msg = f"Are you happy with the amount of {color}${amt}{PrintColor.NORMAL}? "
+        msg += "(enter or 'yes') "
+        verify = input(msg)
         if verify != '' and verify.strip().lower() != 'yes':
             amt = -1.0
     return amt

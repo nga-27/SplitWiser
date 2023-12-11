@@ -13,6 +13,8 @@ from cmd_app.utils.title_page import show_title
 OPTION_STATES = {
     "v": "view",
     "view": "view",
+    "t": "view",
+    "transaction": "view",
     "a": "add",
     "add": "add",
     "d": "delete",
@@ -49,7 +51,8 @@ def what_to_do_options():
         options = "What would you like to do? Options include:\r\n\r\n"
         options += f"\t- View {color.MAGENTA}BALANCES{color.NORMAL} between "
         options += "accounts (b or balance)\r\n"
-        options += f"\t- {color.CYAN}V{color.NORMAL}iew {color.CYAN}TRANSACTIONS{color.NORMAL} (v or view)\r\n"
+        options += f"\t- View {color.CYAN}TRANSACTIONS{color.NORMAL} "
+        options += "(v or view, t or transaction)\r\n"
         options += f"\t- {color.GREEN}ADD{color.NORMAL} transactions (a or add)\r\n"
         options += f"\t- {color.RED}DELETE{color.NORMAL} Transaction (d or delete)\r\n"
         options += f"\t- {color.BLUE}SETTLE UP{color.NORMAL} / make a payment (s or settle)\r\n"

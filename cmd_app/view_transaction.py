@@ -7,8 +7,7 @@ from cmd_app.utils.constants import PrintColor
 
 
 def view_handler(base_url: str) -> bool:
-    color = PrintColor()
-    msg = f"Sweet, let's check out the {color.CYAN}TRANSACTIONS{color.NORMAL} that exist."
+    msg = f"Sweet, let's check out the {PrintColor.CYAN}TRANSACTIONS{PrintColor.NORMAL} that exist."
     account, color = intro_and_choose_account(msg)
     transactions = handle_get_payload(f"{base_url}/transactions/{account}")
     format_transactions(transactions, account, color=color)

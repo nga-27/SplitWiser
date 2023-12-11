@@ -19,8 +19,10 @@ def get_valid_name(message: str, color: Union[str, None] = None) -> str:
     return name
 
 
-def how_to_split_transaction(amt: float, who_paid: str) -> float:
+def how_to_split_transaction(amt: float, who_paid: str, color: Union[str, None] = None) -> float:
     """ returns what the other person pays """
+    if color is None:
+        color = PrintColor.NORMAL
     OPTION_SPLITS = ["50% / 50%", "100% the other person", f"100% {who_paid}, so no one owes",
                      "60% Nick, 40% Jill", "Custom"]
     OPTION_MATH = [0.5, 1.0, 0.0, 0.4, 1.0]
@@ -59,7 +61,7 @@ def how_to_split_transaction(amt: float, who_paid: str) -> float:
                 print(f"'{val}' is an invalid amount. Please try again.\r\n")
                 time.sleep(2)
         amt = val
-    print(f"Split option is: {OPTION_SPLITS[split_option - 1]}\r\n")
+    print(f"Split option is: {color}{OPTION_SPLITS[split_option - 1]}{PrintColor.NORMAL}\r\n")
     return round(OPTION_MATH[split_option - 1] * amt, 2)
 
     
@@ -73,18 +75,20 @@ def add_handler(base_url: str) -> bool:
 
     name_msg = f"First, what {PrintColor.GREEN}NAME{PrintColor.NORMAL} "
     name_msg += "should we give this transaction?"
-    transaction_name = get_valid_name(name_msg)
+    transaction_name = get_valid_name(name_msg, color=PrintColor.GREEN)
     account, color = which_account(is_for_payment=True)
-    person = who_paid()
-    person_paid = get_numerical_valid_amount(f"Cool. How much did {person} pay?")
-    other_person = how_to_split_transaction(person_paid, person)
+    person = who_paid(color=PrintColor.GREEN)
+    person_paid = get_numerical_valid_amount(
+        f"Cool. How much did {person} pay?", color=PrintColor.GREEN)
+    other_person = how_to_split_transaction(person_paid, person, color=PrintColor.GREEN)
 
-    time.sleep(1)
+    time.sleep(2)
     message = "Summary of transaction:\r\n\r\n"
     message += f"\tAccount: {color}{account}{PrintColor.NORMAL}\r\n"
-    message += f"\tNamed: '{transaction_name}'\r\n"
-    message += f"\t{person} paid ${person_paid}\r\n"
-    message += f"\t{OTHER_PERSON[person]} now OWES ${other_person}"
+    message += f"\tNamed: {PrintColor.BLUE}'{transaction_name}'{PrintColor.NORMAL}\r\n"
+    message += f"\t{person} paid {PrintColor.GREEN}${person_paid}{PrintColor.NORMAL}\r\n"
+    message += f"\t{OTHER_PERSON[person]} now OWES "
+    message += f"{PrintColor.RED}${other_person}{PrintColor.NORMAL}"
     print(message)
     time.sleep(4)
     print("\r\n\r\n")
