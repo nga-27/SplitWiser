@@ -9,4 +9,5 @@ def view_balances_handler(base_url: str) -> bool:
     time.sleep(1)
     balances = handle_get_payload(f"{base_url}/summary/")
     format_balances(balances)
+    time.sleep(4)
     return True

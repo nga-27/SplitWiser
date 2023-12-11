@@ -1,7 +1,7 @@
 import datetime
 from typing import Union
 
-from api.libs.db import get_db, post_to_db, patch_entire_table
+from api.libs.db import get_db, post_to_db, patch_entire_table, reorder_table
 from api.libs.summary import update_summary
 from api.libs.utils import transaction_payers_and_debtors
 from api.models.models import AddTransaction, Transaction
@@ -13,14 +13,15 @@ def get_transactions(ledger_sheet: str, id: Union[str, None] = None) -> dict:
         return ledger
     return ledger.get(str(id))
 
-def delete_transaction(id: str, ledger_sheet: str) -> Union[None, str]:
+def delete_transaction(id: str, ledger_sheet: str) -> Union[dict, None]:
     ledger = get_db()[ledger_sheet]
     if id not in ledger:
-        return f"Transaction id '{id}' not found."
-    ledger.pop(id)
+        return None
+    transaction = ledger.pop(id)
     patch_entire_table(ledger, ledger_sheet)
+    reorder_table(ledger_sheet)
     update_summary()
-    return None
+    return transaction
 
 
 def add_transaction(add_transaction: AddTransaction, ledger_sheet: str):

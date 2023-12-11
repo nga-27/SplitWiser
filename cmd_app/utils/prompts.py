@@ -1,42 +1,52 @@
 import time
+from typing import Tuple, Union
 
+from .constants import ACCOUNTS, PrintColor
 
-def which_account() -> str:
+def which_account(is_for_payment: bool = False) -> Tuple[str, str]:
+    colors = (PrintColor.GREEN, PrintColor.MAGENTA, PrintColor.CYAN, PrintColor.BLUE)
     name = 0
-    ACCOUNTS = [
-        'House Avery', 'Jill and Nick', 'Archived - House Avery', 'Archived - Jill and Nick'
-    ]
-    while name not in (range(1, len(ACCOUNTS) + 1)):
+    accounts = list(ACCOUNTS)
+    if is_for_payment:
+        accounts = accounts
+    end_of_options = len(accounts)
+    acc_colors = {item: colors[i] for i, item in enumerate(accounts)}
+
+    while name not in (range(1, len(accounts) + 1)):
         acc_options = ""
-        for i, item in enumerate(ACCOUNTS):
-            acc_options += f"\r\n\t{i+1}. {item}"
-        options = f"\r\nSplitWiser Accounts:{acc_options}"
+        for i, item in enumerate(accounts):
+            acc_options += f"\r\n\t{i+1}. {acc_colors[item]}{item}{PrintColor.NORMAL}"
+        options = f"\r\nAccounts:{acc_options}"
         print(options)
-        name = input("\r\nAlright, which SplitWiser account should we use? (1-4) ").strip()
+        name = input(f"\r\nAlright, which account should we use? (1-{end_of_options}) ").strip()
         try:
             name = int(name)
-            if name not in (range(1, len(ACCOUNTS) + 1)):
+            if name not in (range(1, len(accounts) + 1)):
                 name = 0
-                print("\r\nSorry, that didn't seem to be 1-4. Please try again.\r\n")
+                print(f"\r\nSorry, that didn't seem to be 1-{end_of_options}. Please try again.\r\n")
                 time.sleep(2)
         except:
             name = 0
-            print("\r\nSorry, that didn't seem to be 1-4. Please try again.\r\n")
+            print(f"\r\nSorry, that didn't seem to be 1-{end_of_options}. Please try again.\r\n")
             time.sleep(2)
-    print(f"Nice. You've chosen account '{ACCOUNTS[name - 1]}'.")
+    msg = f"Nice. You've chosen account "
+    msg += f"'{acc_colors[accounts[name - 1]]}{accounts[name - 1]}{PrintColor.NORMAL}'."
+    print(msg)
     time.sleep(2)
-    return ACCOUNTS[name - 1]
+    return ACCOUNTS[name - 1], acc_colors[accounts[name - 1]]
 
 
-def intro_and_choose_account(message: str) -> str:
-    print(f"\r\n{message}\r\n")
+def intro_and_choose_account(message: str, is_for_payment: bool = False) -> Tuple[str, str]:
+    print(f"\r\n{message}")
     time.sleep(1)
-    account = which_account()
+    account, color = which_account(is_for_payment=is_for_payment)
     account_list = account.lower().split(' ')
     account_url = '_'.join(account_list)
     if '-' in account_list:
         account_url = f"{account_list[0]}/{account_list[2]}_{account_list[3]}"
-    return account_url
+        if len(account_list) > 4:
+            account_url += f"_{account_list[4]}"
+    return account_url, color
 
 
 def input_id_handler(id_str: str, num_transactions: int) -> str:
@@ -56,7 +66,9 @@ def input_id_handler(id_str: str, num_transactions: int) -> str:
     return str(id_)
 
 
-def who_paid(is_settle_up_payment: bool = False) -> str:
+def who_paid(is_settle_up_payment: bool = False, color: Union[str, None] = None) -> str:
+    if color is None:
+        color = PrintColor.NORMAL
     print("")
     okay_for_transaction = False
     first_input = 'made this payment' if is_settle_up_payment else 'paid for this transaction'
@@ -64,7 +76,7 @@ def who_paid(is_settle_up_payment: bool = False) -> str:
     while not okay_for_transaction:
         person = ""
         while person not in ('Jill', 'Nick'):
-            person = input(f"Who paid {first_input}? (Jill or Nick) ")
+            person = input(f"Who {first_input}? (Jill or Nick) ")
             if 'jill' not in person.lower() and 'nick' not in person.lower():
                 print("Hmmm. That didn't look like 'Jill' or 'Nick'. Please try again.\r\n")
                 person = ""
@@ -75,14 +87,17 @@ def who_paid(is_settle_up_payment: bool = False) -> str:
             else:
                 person = 'Nick'
         
-        is_fine = input(f"Cool. Are you good with '{person}' {second_input}? (hit enter if yes) ")
-        if is_fine == '':
+        msg = f"Cool. Are you good with '{color}{person}{PrintColor.NORMAL}' "
+        msg += f"{second_input}? (hit enter if yes) "
+        is_fine = input(msg)
+        if is_fine == '' or is_fine == 'yes':
             okay_for_transaction = True
-
     return person
 
 
-def get_numerical_valid_amount(message: str) -> float:
+def get_numerical_valid_amount(message: str, color: Union[str, None] = None) -> float:
+    if color is None:
+        color = PrintColor.NORMAL
     amt = -1.0
     while amt < 0.0:
         print("")
@@ -102,7 +117,9 @@ def get_numerical_valid_amount(message: str) -> float:
             time.sleep(2)
             continue
 
-        verify = input(f"Are you happy with the amount of ${amt}? (enter or 'yes') ")
-        if verify != '' and verify.lower() != 'yes':
+        msg = f"Are you happy with the amount of {color}${amt}{PrintColor.NORMAL}? "
+        msg += "(enter or 'yes') "
+        verify = input(msg)
+        if verify != '' and verify.strip().lower() != 'yes':
             amt = -1.0
     return amt

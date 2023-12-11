@@ -44,17 +44,17 @@ def get_jill_and_avery_transaction(id: int) -> dict:
 
 @router.delete("/house_avery/{id}", tags=["Transaction"], status_code=201)
 def delete_house_avery_transaction(id: str):
-    res = delete_transaction(id, 'House Avery')
-    if res is not None:
-        raise HTTPException(status_code=404, detail=res)
-    return "Transaction deleted"
+    res = delete_transaction(id, 'Jill and Nick')
+    if res is None:
+        raise HTTPException(status_code=404, detail=f"Transaction with id #{id} not found.")
+    return res
 
 @router.delete("/jill_and_nick/{id}", tags=["Transaction"], status_code=201)
-def delete_jill_and_nick_transaction(id: str):
+def delete_jill_and_nick_transaction(id: str) -> dict:
     res = delete_transaction(id, 'Jill and Nick')
-    if res is not None:
-        raise HTTPException(status_code=404, detail=res)
-    return "Transaction deleted"
+    if res is None:
+        raise HTTPException(status_code=404, detail=f"Transaction with id #{id} not found.")
+    return res
 
 #########################################################
 
