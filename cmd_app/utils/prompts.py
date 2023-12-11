@@ -44,6 +44,8 @@ def intro_and_choose_account(message: str, is_for_payment: bool = False) -> Tupl
     account_url = '_'.join(account_list)
     if '-' in account_list:
         account_url = f"{account_list[0]}/{account_list[2]}_{account_list[3]}"
+        if len(account_list) > 4:
+            account_url += f"_{account_list[4]}"
     return account_url, color
 
 
