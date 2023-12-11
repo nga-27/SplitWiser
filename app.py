@@ -26,7 +26,6 @@ def run_cmd_prompts():
     shutdown(BASE_URL)
 
 def run_main():
-    print("Loading command-line application. Booting up...")
     t_api = threading.Thread(target=run_api, name='API')
     t_ui = threading.Thread(target=run_cmd_prompts, name='Command-Based UI')
 

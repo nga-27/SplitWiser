@@ -1,25 +1,27 @@
 import time
+from typing import Tuple
 
+from .constants import ACCOUNTS, PrintColor
 
-def which_account(is_for_payment: bool = False) -> str:
+def which_account(is_for_payment: bool = False) -> Tuple[str, str]:
+    colors = (PrintColor.GREEN, PrintColor.MAGENTA, PrintColor.CYAN, PrintColor.BLUE)
     name = 0
-    ACCOUNTS = [
-        'House Avery', 'Jill and Nick', 'Archived - House Avery', 'Archived - Jill and Nick'
-    ]
+    accounts = list(ACCOUNTS)
     if is_for_payment:
-        ACCOUNTS = ACCOUNTS[0:2]
-    end_of_options = len(ACCOUNTS)
+        accounts = accounts
+    end_of_options = len(accounts)
+    acc_colors = {item: colors[i] for i, item in enumerate(accounts)}
 
-    while name not in (range(1, len(ACCOUNTS) + 1)):
+    while name not in (range(1, len(accounts) + 1)):
         acc_options = ""
-        for i, item in enumerate(ACCOUNTS):
-            acc_options += f"\r\n\t{i+1}. {item}"
-        options = f"\r\nSplitWiser Accounts:{acc_options}"
+        for i, item in enumerate(accounts):
+            acc_options += f"\r\n\t{i+1}. {acc_colors[item]}{item}{PrintColor.NORMAL}"
+        options = f"\r\nAccounts:{acc_options}"
         print(options)
-        name = input(f"\r\nAlright, which SplitWiser account should we use? (1-{end_of_options}) ").strip()
+        name = input(f"\r\nAlright, which account should we use? (1-{end_of_options}) ").strip()
         try:
             name = int(name)
-            if name not in (range(1, len(ACCOUNTS) + 1)):
+            if name not in (range(1, len(accounts) + 1)):
                 name = 0
                 print(f"\r\nSorry, that didn't seem to be 1-{end_of_options}. Please try again.\r\n")
                 time.sleep(2)
@@ -27,20 +29,22 @@ def which_account(is_for_payment: bool = False) -> str:
             name = 0
             print(f"\r\nSorry, that didn't seem to be 1-{end_of_options}. Please try again.\r\n")
             time.sleep(2)
-    print(f"Nice. You've chosen account '{ACCOUNTS[name - 1]}'.")
+    msg = f"Nice. You've chosen account "
+    msg += f"'{acc_colors[accounts[name - 1]]}{accounts[name - 1]}{PrintColor.NORMAL}'."
+    print(msg)
     time.sleep(2)
-    return ACCOUNTS[name - 1]
+    return ACCOUNTS[name - 1], acc_colors[accounts[name - 1]]
 
 
-def intro_and_choose_account(message: str, is_for_payment: bool = False) -> str:
-    print(f"\r\n{message}\r\n")
+def intro_and_choose_account(message: str, is_for_payment: bool = False) -> Tuple[str, str]:
+    print(f"\r\n{message}")
     time.sleep(1)
-    account = which_account(is_for_payment=is_for_payment)
+    account, color = which_account(is_for_payment=is_for_payment)
     account_list = account.lower().split(' ')
     account_url = '_'.join(account_list)
     if '-' in account_list:
         account_url = f"{account_list[0]}/{account_list[2]}_{account_list[3]}"
-    return account_url
+    return account_url, color
 
 
 def input_id_handler(id_str: str, num_transactions: int) -> str:

@@ -1,16 +1,21 @@
 import time
+from typing import Union
 
 from cmd_app.utils.prompts import which_account, who_paid, get_numerical_valid_amount
 from cmd_app.utils.api import handle_post
-from cmd_app.utils.constants import OTHER_PERSON
+from cmd_app.utils.constants import OTHER_PERSON, PrintColor
 
 
-def get_valid_name(message: str) -> str:
+def get_valid_name(message: str, color: Union[str, None] = None) -> str:
     print("")
+    if color is None:
+        color = PrintColor.NORMAL
     name2 = "N"
     while 'N' in name2:
         name = input(f"{message} ")
-        name2 = input(f"Nice. Cool with '{name}'? (just hit enter if yes, or 'N' if to redo it.)").upper()
+        check_name = f"Nice. Cool with '{color}{name}{PrintColor.NORMAL}'? "
+        check_name += "(just hit enter if yes, or 'N' if to redo it.)"
+        name2 = input(check_name).upper()
     return name
 
 
@@ -61,18 +66,22 @@ def how_to_split_transaction(amt: float, who_paid: str) -> float:
 #############################################
 
 def add_handler(base_url: str) -> bool:
-    print("\r\nCool, let's **ADD** a transaction. We'll start by asking some questions about it...")
+    msg = f"\r\nCool, let's {PrintColor.GREEN}**ADD**{PrintColor.NORMAL} "
+    msg += "a transaction. We'll start by asking some questions about it..."
+    print(msg)
     time.sleep(2)
 
-    transaction_name = get_valid_name("First, what NAME should we give this transaction?")
-    account = which_account(is_for_payment=True)
+    name_msg = f"First, what {PrintColor.GREEN}NAME{PrintColor.NORMAL} "
+    name_msg += "should we give this transaction?"
+    transaction_name = get_valid_name(name_msg)
+    account, color = which_account(is_for_payment=True)
     person = who_paid()
     person_paid = get_numerical_valid_amount(f"Cool. How much did {person} pay?")
     other_person = how_to_split_transaction(person_paid, person)
 
     time.sleep(1)
     message = "Summary of transaction:\r\n\r\n"
-    message += f"\tAccount: {account}\r\n"
+    message += f"\tAccount: {color}{account}{PrintColor.NORMAL}\r\n"
     message += f"\tNamed: '{transaction_name}'\r\n"
     message += f"\t{person} paid ${person_paid}\r\n"
     message += f"\t{OTHER_PERSON[person]} now OWES ${other_person}"

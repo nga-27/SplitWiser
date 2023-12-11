@@ -28,7 +28,7 @@ def post_payment(base_url: str, account: str, person: str, amount: float) -> Non
 ############################################
 
 def record_handler(base_url: str) -> bool:
-    account = intro_and_choose_account("Awesome. Let's record a payment.", is_for_payment=True)
+    account, _ = intro_and_choose_account("Awesome. Let's record a payment.", is_for_payment=True)
     person = who_paid(is_settle_up_payment=True)
     amount = get_balance_of_account(base_url, account, person)
     post_payment(base_url, account, person, amount)

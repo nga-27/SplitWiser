@@ -26,7 +26,8 @@ OPTION_STATES = {
 }
 
 def exit_handler(_: str) -> bool:
-    print("\r\nWe'll start to exit...\r\n")
+    color = PrintColor()
+    print(f"\r\nWe'll start to {color.YELLOW}EXIT{color.NORMAL}...")
     time.sleep(1)
     return False
 
@@ -48,7 +49,7 @@ def what_to_do_options():
         options = "What would you like to do? Options include:\r\n\r\n"
         options += f"\t- View {color.MAGENTA}BALANCES{color.NORMAL} between "
         options += "accounts (b or balance)\r\n"
-        options += f"\t- View {color.CYAN}TRANSACTIONS{color.NORMAL} (v or view)\r\n"
+        options += f"\t- {color.CYAN}V{color.NORMAL}iew {color.CYAN}TRANSACTIONS{color.NORMAL} (v or view)\r\n"
         options += f"\t- {color.GREEN}ADD{color.NORMAL} transactions (a or add)\r\n"
         options += f"\t- {color.RED}DELETE{color.NORMAL} Transaction (d or delete)\r\n"
         options += f"\t- {color.BLUE}SETTLE UP{color.NORMAL} / make a payment (s or settle)\r\n"

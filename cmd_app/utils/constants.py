@@ -8,6 +8,8 @@ OTHER_PERSON = {
 
 AVAILABLE_PEOPLE = ('Jill', 'Nick')
 
+ACCOUNTS = ('House Avery', 'Jill and Nick', 'Archived - House Avery', 'Archived - Jill and Nick')
+
 # UI-Specific constants
 class PrintColor:
     BLACK = Fore.BLACK

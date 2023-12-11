@@ -32,13 +32,13 @@ def is_account_empty(num_transactions: int) -> bool:
 ##########################################
 
 def delete_handler(base_url: str) -> bool:
-    account = intro_and_choose_account(
+    account, color = intro_and_choose_account(
         "Deleting requires the 'id' of the transaction.", is_for_payment=True)
     transactions = handle_get_payload(f"{base_url}/transactions/{account}")
     if is_account_empty(len(transactions)):
         return True
 
-    format_transactions(transactions, account)
+    format_transactions(transactions, account, color=color)
     id_to_delete = pick_transaction_to_delete(len(transactions))
     if id_to_delete == "menu":
         return True
