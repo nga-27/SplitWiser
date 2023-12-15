@@ -27,7 +27,9 @@ OPTION_STATES = {
     "b": "balance",
     "balance": "balance",
     "e": "exit",
-    "exit": "exit"
+    "exit": "exit",
+    "q": "exit",
+    "quit": "quit"
 }
 
 def exit_handler(_: str) -> bool:
@@ -60,7 +62,7 @@ def what_to_do_options():
         options += f"\t- {color.RED}DELETE{color.NORMAL} Transaction (d or delete)\r\n"
         options += f"\t- {color.BLUE}SETTLE UP{color.NORMAL} / make a payment "
         options += f"(s or settle, p or payment)\r\n"
-        options += f"\t- {color.YELLOW}EXIT{color.NORMAL} (e or exit)"
+        options += f"\t- {color.YELLOW}EXIT{color.NORMAL} (e or exit, q or quit)"
         print(options)
         passed = input("\r\nSo... what would you like to do? ")
         passed = passed.lower().strip()

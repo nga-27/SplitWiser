@@ -1,31 +1,27 @@
+""" Models for FastAPI and DB strucutures """
 from typing import Optional
 
 from pydantic import BaseModel
 
 
-class Person(BaseModel):
-    id: str # "0"
-    name: str
-
-class TransactionalDebt(BaseModel):
-    id: str
-    person: Person
-    amount: float
-
 class AddTransaction(BaseModel):
+    """ Object to add a transaction (different than transaction as the fields are easier to use for
+    an API input)"""
     item: str
     paid_by_name: str
     paid_amount: float
     other_person_owes: float
 
 class Transaction(BaseModel):
+    """ Transaction record object """
     id: Optional[str] = "0"
     date: Optional[str] = ""
     item: str
-    paid_by_id: dict # Dict[TransactionalDebt] as {person_name: amount, person_name...}
-    owed_by_id: dict # Dict[TransactionalDebt] as {person_name: amount, person_name...}
+    paid_by_id: dict # {person_name: amount, person_name...}
+    owed_by_id: dict # {person_name: amount, person_name...}
 
 class Payment(BaseModel):
+    """ Payment record object """
     id: Optional[str] = "0"
     date: Optional[str] = ""
     account: str
