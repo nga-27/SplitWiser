@@ -107,6 +107,19 @@ def payment_to_account_handler(_db: Dict[str, dict], payment: Payment) -> Tuple[
 
 ############################################################
 
+
+def get_payments() -> dict:
+    """get_payments
+
+    Get the records of payments
+
+    Returns:
+        dict: payment data as a json object
+    """
+    payment_db = get_db()['Payment History']
+    return payment_db
+
+
 def make_payment(add_payment: Payment) -> Tuple[int, str]:
     """make_payment
 

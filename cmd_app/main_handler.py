@@ -5,6 +5,7 @@ from cmd_app.view_transaction import view_handler
 from cmd_app.delete_transaction import delete_handler
 from cmd_app.record_payment import record_handler
 from cmd_app.view_balances import view_balances_handler
+from cmd_app.view_payments import view_payments_handler
 
 from cmd_app.utils.api import handle_get_payload
 from cmd_app.utils.constants import PrintColor
@@ -16,14 +17,14 @@ OPTION_STATES = {
     "view": "view",
     "t": "view",
     "transaction": "view",
+    "h": "history",
+    "history": "history",
     "a": "add",
     "add": "add",
     "d": "delete",
     "delete": "delete",
     "s": "record",
     "settle": "record",
-    "p": "record",
-    "payment": "record",
     "b": "balance",
     "balance": "balance",
     "e": "exit",
@@ -42,6 +43,7 @@ def exit_handler(_: str) -> bool:
 ACTION_FUNCTIONS = {
     "balance": view_balances_handler,
     "view": view_handler,
+    "history": view_payments_handler,
     "add": add_handler,
     "delete": delete_handler,
     "record": record_handler,
@@ -58,10 +60,12 @@ def what_to_do_options():
         options += "accounts (b or balance)\r\n"
         options += f"\t- View {color.CYAN}TRANSACTIONS{color.NORMAL} "
         options += "(v or view, t or transaction)\r\n"
+        options += f"\t- View payment {color.HIGHLIGHT}HISTORY{color.NORMAL} "
+        options += "(h or history)\r\n"
         options += f"\t- {color.GREEN}ADD{color.NORMAL} transactions (a or add)\r\n"
         options += f"\t- {color.RED}DELETE{color.NORMAL} Transaction (d or delete)\r\n"
         options += f"\t- {color.BLUE}SETTLE UP{color.NORMAL} / make a payment "
-        options += f"(s or settle, p or payment)\r\n"
+        options += f"(s or settle)\r\n"
         options += f"\t- {color.YELLOW}EXIT{color.NORMAL} (e or exit, q or quit)"
         print(options)
         passed = input("\r\nSo... what would you like to do? ")

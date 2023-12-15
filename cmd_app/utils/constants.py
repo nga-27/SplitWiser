@@ -1,5 +1,5 @@
 # At some point, I *might* convert this to environment variables or the like
-from colorama import Fore
+from colorama import Fore, Back
 
 OTHER_PERSON = {
     "Jill": "Nick",
@@ -20,4 +20,5 @@ class PrintColor:
     CYAN = Fore.CYAN
     BLUE = Fore.BLUE
     MAGENTA = Fore.MAGENTA
-    NORMAL = Fore.RESET
+    NORMAL = f"{Fore.RESET}{Back.RESET}"
+    HIGHLIGHT = Back.LIGHTBLUE_EX
