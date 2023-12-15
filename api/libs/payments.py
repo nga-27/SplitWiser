@@ -50,7 +50,9 @@ def payment_to_account_handler(db: Dict[str, dict], payment: Payment) -> Tuple[i
     if payment.amount > debtor_amount:
         return 400, f"Amount ${payment.amount} exceeds debt of {payer}, which is ${debtor_amount}."
     
-    if payment.amount <= 0.0:
+    if payment.amount <= 0.0 and debtor_amount != 0.0:
+        # In the case where transactions have canceled in an account, we still want it off the books
+        # so we'll record it anyway if the amount is $0
         return 400, f"Amount ${payment.amount} is not valid."
 
     # Now we know the debt is okay to pay off!

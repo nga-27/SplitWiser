@@ -31,7 +31,8 @@ def format_transactions(transactions: dict, table: str, return_str: bool = False
         amt = 0.0
         payer = ''
         for person, val in trans['paid_by_id'].items():
-            if val > amt:
+            # also equal-to because of payments that are worth 0
+            if val >= amt:
                 amt = val
                 payer = person
 

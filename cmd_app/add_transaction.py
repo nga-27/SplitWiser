@@ -96,8 +96,8 @@ def add_handler(base_url: str) -> bool:
     transaction = {
         "item": transaction_name,
         "paid_by_name": person,
-        "paid_amount": person_paid,
-        "other_person_owes": other_person
+        "paid_amount": float(person_paid),
+        "other_person_owes": float(other_person)
     }
     db_table_name_list = account.lower().split(' ')
     db_table_name = '_'.join(db_table_name_list)

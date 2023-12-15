@@ -23,6 +23,8 @@ OPTION_STATES = {
     "delete": "delete",
     "s": "record",
     "settle": "record",
+    "p": "record",
+    "payment": "record",
     "b": "balance",
     "balance": "balance",
     "e": "exit",
@@ -57,7 +59,8 @@ def what_to_do_options():
         options += "(v or view, t or transaction)\r\n"
         options += f"\t- {color.GREEN}ADD{color.NORMAL} transactions (a or add)\r\n"
         options += f"\t- {color.RED}DELETE{color.NORMAL} Transaction (d or delete)\r\n"
-        options += f"\t- {color.BLUE}SETTLE UP{color.NORMAL} / make a payment (s or settle)\r\n"
+        options += f"\t- {color.BLUE}SETTLE UP{color.NORMAL} / make a payment "
+        options += f"(s or settle, p or payment)\r\n"
         options += f"\t- {color.YELLOW}EXIT{color.NORMAL} (e or exit)"
         print(options)
         passed = input("\r\nSo... what would you like to do? ")
