@@ -1,6 +1,4 @@
-import os
 import time
-from typing import Tuple, Union
 
 from cmd_app.add_transaction import add_handler
 from cmd_app.view_transaction import view_handler
@@ -11,6 +9,7 @@ from cmd_app.view_balances import view_balances_handler
 from cmd_app.utils.api import handle_get_payload
 from cmd_app.utils.constants import PrintColor
 from cmd_app.utils.title_page import show_title
+from cmd_app.utils.file_io import copy_from_cloud, error_handler, push_to_cloud
 
 OPTION_STATES = {
     "v": "view",
@@ -80,12 +79,23 @@ def run(base_url: str):
         is_running = ACTION_FUNCTIONS[action](base_url)
 
 
-def boot_up() -> None:
+def boot_up_sync(pwd: str) -> bool:
     show_title()
+    is_successful = copy_from_cloud(pwd)
+    if not is_successful:
+        error_handler("Missing path files. Exiting...")
+        time.sleep(2)
+        return False
+    return True
 
 
-def error_handler(msg: str) -> None:
-    print(f"{PrintColor.RED}ERROR: {msg}{PrintColor.NORMAL}")
+def close_out_sync(pwd: str) -> bool:
+    is_successful = push_to_cloud(pwd)
+    if not is_successful:
+        error_handler("Copying to cloud issue.")
+        time.sleep(2)
+        return False
+    return True
 
 
 def startup(base_url: str) -> None:
@@ -102,14 +112,3 @@ def startup(base_url: str) -> None:
 def shutdown(base_url: str) -> None:
     print("\r\nShutting down...")
     handle_get_payload(f"{base_url}/shutdown", skip_response=True)
-
-
-def get_src_and_dest_paths(pwd: str) -> Tuple[Union[str, None], Union[str, None]]:
-    dot_env_path = os.path.join(pwd, '.env')
-    if os.path.exists(dot_env_path) is False:
-        error_handler(f'NO ENVIRONMENT FILE. Current PWD: {dot_env_path}')
-        return None, None
-
-    source_path = os.getenv("INPUT_SOURCE_PATH", "")
-    dest_path = os.path.join(os.getenv("SHARE_DIRECTORY_PATH", ""), os.getenv("SPLIT_WISER_FILE", ""))
-    return source_path, dest_path
