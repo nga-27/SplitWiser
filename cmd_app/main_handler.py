@@ -1,4 +1,6 @@
+import os
 import time
+from typing import Tuple, Union
 
 from cmd_app.add_transaction import add_handler
 from cmd_app.view_transaction import view_handler
@@ -75,8 +77,15 @@ def run(base_url: str):
         is_running = ACTION_FUNCTIONS[action](base_url)
 
 
-def startup(base_url: str) -> None:
+def boot_up() -> None:
     show_title()
+
+
+def error_handler(msg: str) -> None:
+    print(f"{PrintColor.RED}ERROR: {msg}{PrintColor.NORMAL}")
+
+
+def startup(base_url: str) -> None:
     has_succeeded = False
     while not has_succeeded:
         try:
@@ -90,3 +99,14 @@ def startup(base_url: str) -> None:
 def shutdown(base_url: str) -> None:
     print("\r\nShutting down...")
     handle_get_payload(f"{base_url}/shutdown", skip_response=True)
+
+
+def get_src_and_dest_paths(pwd: str) -> Tuple[Union[str, None], Union[str, None]]:
+    dot_env_path = os.path.join(pwd, '.env')
+    if os.path.exists(dot_env_path) is False:
+        error_handler(f'NO ENVIRONMENT FILE. Current PWD: {dot_env_path}')
+        return None, None
+
+    source_path = os.getenv("INPUT_SOURCE_PATH", "")
+    dest_path = os.path.join(os.getenv("SHARE_DIRECTORY_PATH", ""), os.getenv("SPLIT_WISER_FILE", ""))
+    return source_path, dest_path

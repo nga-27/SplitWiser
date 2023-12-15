@@ -8,7 +8,7 @@ def which_account(is_for_payment: bool = False) -> Tuple[str, str]:
     name = 0
     accounts = list(ACCOUNTS)
     if is_for_payment:
-        accounts = accounts
+        accounts = accounts[0:2]
     end_of_options = len(accounts)
     acc_colors = {item: colors[i] for i, item in enumerate(accounts)}
 
