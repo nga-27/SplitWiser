@@ -36,7 +36,7 @@ def post_new_jill_and_nick_transaction(add_trans: AddTransaction):
 @router.get("/house_avery/{_id}", tags=["Transaction"], status_code=200)
 def get_house_avery_transaction(_id: int) -> dict:
     """ View a single House Avery transaction by _id """
-    transaction = get_transactions('House Avery', str(_id))
+    transaction = get_transactions('House Avery', _id=str(_id))
     if not transaction:
         raise HTTPException(status_code=404, detail=f"Transaction with id #{_id} not found.")
     return transaction
@@ -44,7 +44,7 @@ def get_house_avery_transaction(_id: int) -> dict:
 @router.get("/jill_and_nick/{_id}", tags=["Transaction"], status_code=200)
 def get_jill_and_nick_transaction(_id: int) -> dict:
     """ View a single Jill and Nick transaction by _id """
-    transaction = get_transactions('Jill and Nick', str(_id))
+    transaction = get_transactions('Jill and Nick', _id=str(_id))
     if not transaction:
         raise HTTPException(status_code=404, detail=f"Transaction with id #{_id} not found.")
     return transaction
