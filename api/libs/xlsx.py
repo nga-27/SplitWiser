@@ -1,3 +1,4 @@
+""" utilities for saving and reading the xlsx db file """
 import shutil
 import os
 from typing import Dict
@@ -8,7 +9,21 @@ import pandas as pd
 from api.models.models import Transaction, Payment
 
 
-def money_by_involved_handler(transaction_dict: dict, index: int, key: str, _db: dict) -> Dict[str, float]:
+def money_by_involved_handler(transaction_dict: dict, index: int,
+                              key: str, _db: dict) -> Dict[str, float]:
+    """money_by_involved_handler
+
+    converts a transaction dictionary from the xlsx db to actual json db object
+
+    Args:
+        transaction_dict (dict): from xlsx file
+        index (int): row index
+        key (str): ('Owes' or 'Paid')
+        _db (dict): json db
+
+    Returns:
+        Dict[str, float]: money dictionary object
+    """
     money_dict = {}
     if key not in ('Owes', 'Paid'):
         return money_dict
@@ -17,12 +32,23 @@ def money_by_involved_handler(transaction_dict: dict, index: int, key: str, _db:
             int(person_id)
             val = transaction_dict[f"{person_obj['name']} {key}"][index]
             money_dict[person_obj['name']] = val
-        except:
+        except: # pylint: disable=bare-except
             continue
     return money_dict
 
 
 def handle_transaction_sheets(raw_df: pd.DataFrame, _db: dict) -> dict:
+    """handle_transaction_sheets
+
+    Read in and convert xlsx transaction sheets to the json db
+
+    Args:
+        raw_df (pd.DataFrame): data frame db "table"
+        _db (dict): json db object
+
+    Returns:
+        dict: transaction json db table
+    """
     trans_dict = {}
     raw_df.dropna(inplace=True)
     df_as_dict = raw_df.to_dict()
@@ -43,6 +69,16 @@ def handle_transaction_sheets(raw_df: pd.DataFrame, _db: dict) -> dict:
 
 
 def handle_loading_summary_sheet(raw_df: pd.DataFrame) -> dict:
+    """handle_loading_summary_sheet
+
+    Read in and convert the summary xlsx db sheet to json db
+
+    Args:
+        raw_df (pd.DataFrame): summary xlsx sheet
+
+    Returns:
+        dict: summary sheet table json db
+    """
     sub_dict = {key: {} for key in raw_df.keys()}
     sub_dict.pop('Person')
     for key in sub_dict:
@@ -52,6 +88,16 @@ def handle_loading_summary_sheet(raw_df: pd.DataFrame) -> dict:
 
 
 def load_people_involved(raw_df: pd.DataFrame) -> dict:
+    """load_people_involved
+
+    Read and convert people from xlsx db summary sheet into people json db table
+
+    Args:
+        raw_df (pd.DataFrame): xlsx sheet of summary information
+
+    Returns:
+        dict: people dict for json db
+    """
     sub_dict = {
         person_id: {"id": person_id, "name": person_name} \
             for person_id, person_name in raw_df['Summary']['Person'].items()
@@ -64,13 +110,23 @@ def load_people_involved(raw_df: pd.DataFrame) -> dict:
         try:
             int(person_id)
             continue
-        except:
+        except: # pylint: disable=bare-except
             list_of_people.append(person_id)
     sub_dict['__list__'] = list_of_people
     return sub_dict
 
 
 def handle_payment_history(raw_df: pd.DataFrame) -> dict:
+    """handle_payment_history
+
+    Read in and convert the Payment History xlsx db sheet to json db object
+
+    Args:
+        raw_df (pd.DataFrame): xlsx sheet
+
+    Returns:
+        dict: json db table object
+    """
     pay_dict = {}
     raw_df.dropna(inplace=True)
     df_as_dict = raw_df.to_dict()
@@ -94,8 +150,18 @@ def handle_payment_history(raw_df: pd.DataFrame) -> dict:
 
 
 def convert_db_trans_to_xlsx_trans(db_table: dict) -> pd.DataFrame:
-    COLUMNS = ['Date', 'Transaction Item', 'Jill Paid', 'Nick Paid', 'Jill Owes', 'Nick Owes']
-    df_as_dict = {col: [] for col in COLUMNS}
+    """convert_db_trans_to_xlsx_trans
+
+    Convert the json db transaction back to an xlsx sheet transaction (for saving)
+
+    Args:
+        db_table (dict): json db transaction table
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+    columns = ['Date', 'Transaction Item', 'Jill Paid', 'Nick Paid', 'Jill Owes', 'Nick Owes']
+    df_as_dict = {col: [] for col in columns}
     for _, trans in db_table.items():
         df_as_dict['Date'].append(trans['date'])
         df_as_dict['Transaction Item'].append(trans['item'])
@@ -109,25 +175,46 @@ def convert_db_trans_to_xlsx_trans(db_table: dict) -> pd.DataFrame:
 
 
 def convert_db_people_to_xlsx_people(person_table: dict) -> pd.DataFrame:
-    COLUMNS = ["Person", "Total", "House Avery", "Jill and Nick"]
-    df_as_dict = {col: [] for col in COLUMNS}
-    for col in COLUMNS:
+    """convert_db_people_to_xlsx_people
+
+    Convert the json db people table back to the xlsx sheet of people
+
+    Args:
+        person_table (dict): json db people table
+
+    Returns:
+        pd.DataFrame: xlsx db table
+    """
+    columns = ["Person", "Total", "House Avery", "Jill and Nick"]
+    df_as_dict = {col: [] for col in columns}
+    for col in columns:
         if col == 'Person':
-            df_as_dict[col] = [name for name in person_table['Total']]
+            df_as_dict[col] = person_table['Total'].keys()
         else:
             df_as_dict[col] = [val for _, val in person_table[col].items()]
     df_db = pd.DataFrame.from_dict(df_as_dict)
     df_db.set_index('Person', inplace=True)
     return df_db
 
+
 def convert_db_payment_to_xlsx_payment(db_table: dict) -> pd.DataFrame:
-    COLUMNS = ['Date', 'Account', 'Payer', 'Amount']
-    df_as_dict = {col: [] for col in COLUMNS}
+    """convert_db_payment_to_xlsx_payment
+
+    Convert json db payments to xlsx payment sheet
+
+    Args:
+        db_table (dict): json db table for payments
+
+    Returns:
+        pd.DataFrame: xlsx table (sheet)
+    """
+    columns = ['Date', 'Account', 'Payer', 'Amount']
+    df_as_dict = {col: [] for col in columns}
     for _, payments in db_table.items():
-        df_as_dict[COLUMNS[0]].append(payments['date'])
-        df_as_dict[COLUMNS[1]].append(payments['account'])
-        df_as_dict[COLUMNS[2]].append(payments['payer'])
-        df_as_dict[COLUMNS[3]].append(payments['amount'])
+        df_as_dict[columns[0]].append(payments['date'])
+        df_as_dict[columns[1]].append(payments['account'])
+        df_as_dict[columns[2]].append(payments['payer'])
+        df_as_dict[columns[3]].append(payments['amount'])
     df_db = pd.DataFrame.from_dict(df_as_dict)
     df_db.set_index('Date', inplace=True)
     return df_db
@@ -160,6 +247,16 @@ def find_max_column_width(column: list, column_name: str='') -> int:
 
 
 def get_real_xlsx_db(xlsx_path: str) -> dict:
+    """get_real_xlsx_db
+
+    Top-level conversion of xlsx db to the json db
+
+    Args:
+        xlsx_path (str): path to the xlsx db file
+
+    Returns:
+        dict: converted to json db
+    """
     df_db = pd.read_excel(xlsx_path, sheet_name=None)
     modded_db = {key: {} for key in df_db.keys()}
     # People (internal key) first
@@ -173,14 +270,22 @@ def get_real_xlsx_db(xlsx_path: str) -> dict:
     return modded_db
 
 
-def set_real_xlsx_db(db_dict: dict, db_path: str) -> None:
-    SHEETS = [
+def set_real_xlsx_db(db_dict: dict, xlsx_path: str) -> None:
+    """set_real_xlsx_db
+
+    Top-level function that takes the json db and saves it back to the xlsx db file
+
+    Args:
+        db_dict (dict): json db
+        xlsx_path (str): xlsx db file path
+    """
+    sheets = [
         'Summary', 'House Avery', 'Jill and Nick', 'Archived - House Avery',
         'Archived - Jill and Nick', 'Payment History'
     ]
-    xlsx_as_dict = {sheet: {} for sheet in SHEETS}
-    with pd.ExcelWriter(db_path) as writer:  
-        for sheet in SHEETS:
+    xlsx_as_dict = {sheet: {} for sheet in sheets}
+    with pd.ExcelWriter(xlsx_path) as writer: # pylint: disable=abstract-class-instantiated
+        for sheet in sheets:
             if sheet in ('Payment History'):
                 xlsx_as_dict[sheet] = convert_db_payment_to_xlsx_payment(db_dict[sheet])
             elif sheet in ('Summary'):
@@ -200,6 +305,14 @@ def set_real_xlsx_db(db_dict: dict, db_path: str) -> None:
 
 
 def archive_xlsx_file(src_path: str) -> None:
+    """archive_xlsx_file
+
+    At the start of each boot up of the app/api, we need to archive the local copy of the xlsx file
+    in the case that we corrupt our cloud copy, we can revert and save it.
+
+    Args:
+        src_path (str): path of the xlsx db file
+    """
     current_timestamp = datetime.datetime.now().strftime("%Y_%m_%d__%H_%M_%S")
     new_path = f"{current_timestamp}.xlsx"
     new_dir = os.path.join("output", "archive")
