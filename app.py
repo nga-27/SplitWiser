@@ -21,16 +21,22 @@ PWD = os.path.dirname(__file__)
 
 
 def run_api():
-    subprocess.run(["uvicorn", "api.server:app", "--log-level=warning", f"--port={PORT_NUMBER}"])
+    """ Run the API Thread and Subprocess """
+    subprocess.run(
+        ["uvicorn", "api.server:app", "--log-level=warning", f"--port={PORT_NUMBER}"],
+        check=False
+    )
 
 
 def run_cmd_prompts():
+    """ Run the command prompt 'UI' """
     startup(BASE_URL)
     run(BASE_URL)
     shutdown(BASE_URL)
 
 
 def run_main():
+    """ Run the application, loading screen and threads """
     if not boot_up_sync(PWD):
         return
 
@@ -50,7 +56,7 @@ def run_main():
     time.sleep(1)
     print("Goodbye!")
     time.sleep(2)
-    
+
 
 if __name__ == "__main__":
-    run_main() 
+    run_main()
