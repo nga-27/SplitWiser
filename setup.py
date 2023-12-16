@@ -22,7 +22,7 @@ URL = 'https://github.mmm.com/nga-27/SplitWiser'
 EMAIL = 'namell91@gmail.com'
 AUTHOR = 'Nick Amell'
 REQUIRES_PYTHON = '>=3.11.0'
-VERSION = '0.2.0'
+VERSION = '0.3.0'
 
 # What packages are required for this module to be executed?
 REQUIRES = [
@@ -41,6 +41,10 @@ REQUIRES = [
 
 REQUIRES_DEV = [
     "pylint==2.15.0"
+]
+
+REQUIRES_EXE = [
+    "pyinstaller"
 ]
 
 setup(
@@ -63,6 +67,7 @@ setup(
     install_requires=REQUIRES,
     extras_require={
         'dev': REQUIRES_DEV,
+        'exe': REQUIRES_EXE,
     },
     include_package_data=True,
     license='MIT',
