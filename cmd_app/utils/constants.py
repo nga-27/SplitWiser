@@ -1,4 +1,4 @@
-# At some point, I *might* convert this to environment variables or the like
+""" Constants for the application + colors for command line printing fun """
 from colorama import Fore, Back
 
 OTHER_PERSON = {
@@ -11,7 +11,8 @@ AVAILABLE_PEOPLE = ('Jill', 'Nick')
 ACCOUNTS = ('House Avery', 'Jill and Nick', 'Archived - House Avery', 'Archived - Jill and Nick')
 
 # UI-Specific constants
-class PrintColor:
+class PrintColor: # pylint: disable=too-few-public-methods
+    """ Color mapping from colorama """
     BLACK = Fore.BLACK
     WHITE = Fore.WHITE
     RED = Fore.RED

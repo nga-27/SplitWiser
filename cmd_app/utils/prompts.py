@@ -1,9 +1,21 @@
+""" Command prompts for main application """
 import time
 from typing import Tuple, Union
 
 from .constants import ACCOUNTS, PrintColor
 
+
 def which_account(is_for_payment: bool = False) -> Tuple[str, str]:
+    """which_account
+
+    Prompts to get the user to enter in the correct account
+
+    Args:
+        is_for_payment (bool, optional): flag to hide 'Archived' accounts. Defaults to False.
+
+    Returns:
+        Tuple[str, str]: Account name, Account "color" as a special string
+    """
     colors = (PrintColor.GREEN, PrintColor.MAGENTA, PrintColor.CYAN, PrintColor.BLUE)
     name = 0
     accounts = list(ACCOUNTS)
@@ -23,13 +35,14 @@ def which_account(is_for_payment: bool = False) -> Tuple[str, str]:
             name = int(name)
             if name not in (range(1, len(accounts) + 1)):
                 name = 0
-                print(f"\r\nSorry, that didn't seem to be 1-{end_of_options}. Please try again.\r\n")
+                msg = f"\r\nSorry, that didn't seem to be 1-{end_of_options}. Please try again.\r\n"
+                print(msg)
                 time.sleep(2)
-        except:
+        except: # pylint: disable=bare-except
             name = 0
             print(f"\r\nSorry, that didn't seem to be 1-{end_of_options}. Please try again.\r\n")
             time.sleep(2)
-    msg = f"Nice. You've chosen account "
+    msg = "Nice. You've chosen account "
     msg += f"'{acc_colors[accounts[name - 1]]}{accounts[name - 1]}{PrintColor.NORMAL}'."
     print(msg)
     time.sleep(2)
@@ -37,6 +50,17 @@ def which_account(is_for_payment: bool = False) -> Tuple[str, str]:
 
 
 def intro_and_choose_account(message: str, is_for_payment: bool = False) -> Tuple[str, str]:
+    """intro_and_choose_account
+
+    Prompts to introduce an action and have the user select the account to operate upon
+
+    Args:
+        message (str): Opening introductory message
+        is_for_payment (bool, optional): Flag to hide 'Archived' accounts. Defaults to False.
+
+    Returns:
+        Tuple[str, str]: account url (for api), color of account for printing
+    """
     print(f"\r\n{message}")
     time.sleep(1)
     account, color = which_account(is_for_payment=is_for_payment)
@@ -50,6 +74,17 @@ def intro_and_choose_account(message: str, is_for_payment: bool = False) -> Tupl
 
 
 def input_id_handler(id_str: str, num_transactions: int) -> str:
+    """input_id_handler
+
+    Prompts to get a row id of a transaction entered correctly
+
+    Args:
+        id_str (str): attempted id (or 'menu')
+        num_transactions (int): number of available transactions, as a safeguard check
+
+    Returns:
+        str: correct id or "" on a bad option
+    """
     id_str = id_str.strip()
     if 'menu' in id_str.lower():
         return 'menu'
@@ -59,14 +94,27 @@ def input_id_handler(id_str: str, num_transactions: int) -> str:
             print(f"'{id_}' is not in range of 0 - {num_transactions - 1}. Please try again.\r\n")
             time.sleep(1)
             return ""
-    except:
-        print(f"'{id_}' is not a valid number in range of 0 - {num_transactions - 1}. Please try again.\r\n")
+    except: # pylint: disable=bare-except
+        msg = f"'{id_}' is not a valid number in range of 0 - {num_transactions - 1}. "
+        msg += "Please try again.\r\n"
+        print(msg)
         time.sleep(1)
         return ""
     return str(id_)
 
 
 def who_paid(is_settle_up_payment: bool = False, color: Union[str, None] = None) -> str:
+    """who_paid
+
+    Prompts to configure who paid for a transaction or settle up payment
+
+    Args:
+        is_settle_up_payment (bool, optional): flag for settle up payments. Defaults to False.
+        color (Union[str, None], optional): special string for account printing. Defaults to None.
+
+    Returns:
+        str: person's name referencing a DB entry
+    """
     if color is None:
         color = PrintColor.NORMAL
     print("")
@@ -86,16 +134,27 @@ def who_paid(is_settle_up_payment: bool = False, color: Union[str, None] = None)
                 person = 'Jill'
             else:
                 person = 'Nick'
-        
+
         msg = f"Cool. Are you good with '{color}{person}{PrintColor.NORMAL}' "
         msg += f"{second_input}? (hit enter if yes) "
         is_fine = input(msg)
-        if is_fine == '' or is_fine == 'yes':
+        if is_fine in ('', 'yes'):
             okay_for_transaction = True
     return person
 
 
 def get_numerical_valid_amount(message: str, color: Union[str, None] = None) -> float:
+    """get_numerical_valid_amount
+
+    Prompts and checks to ensure a valid amount value is entered by the user
+
+    Args:
+        message (str): input prompt to the user
+        color (Union[str, None], optional): special string for colors. Defaults to None.
+
+    Returns:
+        float: valid amount that could be a cost figure
+    """
     if color is None:
         color = PrintColor.NORMAL
     amt = -1.0
@@ -113,7 +172,9 @@ def get_numerical_valid_amount(message: str, color: Union[str, None] = None) -> 
                 continue
         except ValueError:
             amt = -1.0
-            print("I'm sorry, that didn't seem to be a valid amount. Try in the form of XXX.YY or XXX.")
+            msg = "I'm sorry, that didn't seem to be a valid amount. "
+            msg += "Try in the form of XXX.YY or XXX."
+            print(msg)
             time.sleep(2)
             continue
 
