@@ -18,7 +18,7 @@ from setuptools import find_packages, setup
 # Package meta-data.
 NAME = 'splitwiser'
 DESCRIPTION = 'An open source tool similar to splitwise to balance expenses.'
-URL = 'https://github.mmm.com/nga-27/SplitWiser'
+URL = 'https://github.com/nga-27/SplitWiser'
 EMAIL = 'namell91@gmail.com'
 AUTHOR = 'Nick Amell'
 REQUIRES_PYTHON = '>=3.11.0'
